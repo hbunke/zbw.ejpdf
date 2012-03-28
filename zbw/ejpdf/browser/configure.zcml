@@ -5,7 +5,12 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
 >
 
-    
+<browser:page
+      name="cover_xml"
+      for="Products.eJournal.interfaces.marker.IPaper"
+      class=".cover.View"
+      permission="cmf.ManagePortal" />
+
 
 </configure>
 

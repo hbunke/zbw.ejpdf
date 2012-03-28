@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<metal:block
+    xmlns="http://www.economics-ejournal.org/namespaces/cover"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal">
+
+    <cover>
+ 
+        <portal_type tal:content="context/portal_type" />
+        <date tal:content="view/publish_date" />
+
+        <!-- #TODO f. Journalarticle DOI -->
+        <url tal:content="context/absolute_url" />
+        <title tal:content="context/Title" />
+
+        <!-- TODO -->
+        <authors></authors>
+
+        <abstract>abstract
+            <!--XXX we have the abstract only as HTML!!! -->
+        </abstract>
+
+        <jels>
+            <tal:block tal:repeat="jel context/jel">
+                <jel tal:content="jel" />
+            </tal:block>
+        </jels>
+
+        <keywords>muss noch generiert werden</keywords>
+
+        <correspondence>muss noch generiert werden</correspondence>
+
+    </cover>
+
+</metal:block>
+
