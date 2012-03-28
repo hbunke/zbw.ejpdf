@@ -1,0 +1,7 @@
+## ignores for mercurial repository
+
+syntax: glob
+
+*.pyc
+dist/*
+*egg-info*
