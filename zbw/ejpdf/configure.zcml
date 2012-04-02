@@ -6,7 +6,12 @@
 >
 
 <include package=".browser" />
-    
+
+
+ <adapter
+        for="Products.eJournal.interfaces.marker.IPaper"
+        provides=".interfaces.ICover"
+        factory=".adapters.Cover" />
 
 </configure>
 

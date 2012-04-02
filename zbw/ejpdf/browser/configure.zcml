@@ -9,7 +9,16 @@
       name="cover_xml"
       for="Products.eJournal.interfaces.marker.IPaper"
       class=".cover.View"
-      permission="cmf.ManagePortal" />
+      allowed_interface=".cover.IView"
+      permission="zope2.Public" />
+
+
+
+<browser:page
+    name="cover_pdf"
+    for="Products.eJournal.interfaces.marker.IPaper"
+    class=".cover.PdfView"
+     permission="cmf.ManagePortal" />
 
 
 </configure>

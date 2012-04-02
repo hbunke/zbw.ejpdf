@@ -7,8 +7,14 @@
 								
 <xsl:template match="/">
 
+    <!-- TODO:
+         -  hyphenate (Abstract)
+         -  footer
+         -  journalarticle sieht anders aus: kein portal_type, kleineres logo?, vol statt no
+    -->
+
 	<fo:root
-	font-family="Helvetica" 
+	font-family="Times" 
 	font-selection-strategy="character-by-character" 
 	font-size="11pt">
 	
@@ -16,166 +22,122 @@
 			
 			<fo:simple-page-master master-name="A4"
 				page-width="210mm" page-height="297mm"
-				margin-top="1.5cm" margin-bottom="1.25cm" margin-left="3cm"
-				margin-right="3cm">
+				margin-top="1.5cm" margin-bottom="1.25cm" margin-left="3.6cm"
+				margin-right="3.6cm">
 				<fo:region-body margin-top="2.5cm" />
 				<fo:region-before extent="2cm" />
-				<fo:region-after extent="2cm" />
+				<fo:region-after extent="1cm" />
 			</fo:simple-page-master>
 		
 		</fo:layout-master-set>
 			
-			<fo:page-sequence master-reference="A4">
+        <fo:page-sequence master-reference="A4">
+
+            <fo:static-content flow-name="xsl-region-after"
+                font-size="8pt" font-family="Helvetica">
+                <fo:block>
+                    © Author(s) 2012. Licensed under a Creative Commons License - Attribution-NonCommercial 2.0 Germany
+                </fo:block>
+            </fo:static-content>
 			
 				<fo:flow flow-name="xsl-region-body">
 					
-					
-					<!-- Logo -->
-					<fo:block-container absolute-position="fixed" top="1.1cm" left="3cm">
-						<fo:block>
-                            <!--TODO -->	
-                            <fo:external-graphic src="file:///" content-height="1.58cm"/>
-						</fo:block>
-					</fo:block-container>
-					
-					
-                    <!-- Absender Adressfeld BEISPIEL! -->
-					<fo:block-container
-						absolute-position="fixed"
-						left="3cm"
-						right="0cm"
-						bottom="0cm"
-						top="3.5cm"
-						font-size="7pt"
-						font-family="Helvetica">
-						<fo:block>Dr. Hendrik Bunke | Friesenstr. 93 | 28203 Bremen</fo:block>
-					</fo:block-container>
-					
-					<fo:block-container
-						absolute-position="fixed"
-						left="3cm"
-						right="0cm"
-						top="4.45cm"
-						bottom="0cm">
-						<fo:block>
-							<xsl:value-of select="/brief/adresse/name" />
-						</fo:block>
-						<xsl:for-each select="//zeile">
-							<fo:block><xsl:value-of select="." /></fo:block>
-						</xsl:for-each>
-						<fo:block>
-							<xsl:value-of select="/brief/adresse/strasse" />
-						</fo:block>
-						<fo:block space-before="6pt">
-							<xsl:value-of select="/brief/adresse/plz" /><xsl:text> </xsl:text><xsl:value-of select="/brief/adresse/ort" />
-						</fo:block>
-					</fo:block-container>
-					
-					
-					<xsl:apply-templates />
+                    <!-- Logo -->
+                    <fo:block-container absolute-position="fixed" top="1.5cm" left="1cm">
+						<fo:block >
+                            <fo:external-graphic src="file:///home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/example_files/logo3.tif" />
+                        </fo:block>
+                    </fo:block-container>
+
+                    <!-- infozeile -->
+                    <fo:block-container space-before="6px"
+                        font-family="Helvetica"
+                        font-size="8pt">
+                    	<fo:block font-weight="bold">
+                            <xsl:value-of select="/cover/portal_type" />
+                        </fo:block>
+                        <fo:block>
+                            No.  <fo:inline><xsl:value-of select="/cover/id" /></fo:inline> |
+                            <fo:inline><xsl:value-of select="/cover/date" /></fo:inline> |
+                            <fo:inline><xsl:value-of select="/cover/url" /></fo:inline>
+                        </fo:block>
+                    </fo:block-container>
+
+
+                    
+                    
+                    <fo:block
+                        
+                        font-size="17pt"
+                        font-weight="bold"
+                        text-align="center"
+                        space-before="2cm">
+
+                        <xsl:value-of select="/cover/title" />
+                    
+                    </fo:block>
+                    
+                    
+                    <fo:block-container
+                        font-style="italic"
+                        space-before="0.5cm"
+                        text-align="center">
+                    
+                        <xsl:apply-templates match="//author" />
+                    
+                    </fo:block-container>
+
+                    
+                    <!-- abstract -->
+                    <fo:block text-align="justify" space-before="18px" language="en" hyphenate="true">
+                        <fo:inline font-weight="bold" padding-right="9px">Abstract </fo:inline>
+                        <xsl:value-of select="/cover/abstract/p" />
+                    </fo:block>
+    
+                    <fo:block text-align="justify" space-after="18px" space-before="12px">
+                        <xsl:value-of select="/cover/abstract/p[2]" />
+                    
+                    </fo:block>
+
+                    <fo:block>
+                        <fo:inline font-weight="bold" padding-right="9px">JEL </fo:inline>
+                        <xsl:for-each select="/cover/jels/jel">
+                            <fo:inline padding-right="6px"><xsl:value-of select="." />
+                            </fo:inline>
+                        </xsl:for-each>
+                    </fo:block>
+
 
                 </fo:flow>
+
+                <!-- footer 
+
+                <fo:flow flow-name="xls-region-after">
+                
+                                   
+                </fo:flow>
+                -->
+
+
 			</fo:page-sequence>
 
 	</fo:root>
 	
 </xsl:template>
 
-<xsl:template match="para">
-	<fo:block space-before="6pt" language="de" hyphenate="true">
-		<xsl:apply-templates />
-	</fo:block>
+<xsl:template match="//author">
+
+    <fo:block font-size="14pt" >
+        <xsl:value-of select="name" />
+    </fo:block>
+
+    <fo:block font-size="11pt" space-after="6px">
+        <xsl:value-of select="affil" />
+    </fo:block>
+
 </xsl:template>
 
-<xsl:template match="betreff">
-	<fo:block space-before="4.2cm" space-after="0.5cm"
-	 font-weight="600" >
-		<xsl:value-of select="." />
-    
-	</fo:block>
-</xsl:template>
 
-<xsl:template match="anrede">
-	<fo:block space-after="12pt">
-		<xsl:value-of select="." /><xsl:text>,</xsl:text>
-	</fo:block>
-</xsl:template>
-
-<xsl:template match="gruss">
-	<fo:block space-before="24pt" space-after="0.5cm">
-		<xsl:value-of select="." />
-	</fo:block>
-	
-	<xsl:choose>
-		<xsl:when test="@signatur='yes'">
-			<fo:block>
-				<fo:external-graphic src="file:///home/bunke/hbxt/img/unterschrift.jpg" content-height="1.5cm" />
-			</fo:block>
-		</xsl:when>
-		<xsl:otherwise>
-			<fo:block space-after="1cm" />
-		</xsl:otherwise>
-	</xsl:choose>
-	
-	<fo:block>(Dr. Hendrik Bunke)</fo:block>
-</xsl:template>
-		
-<xsl:template match="datum">
-	<fo:block-container absolute-position="fixed" top="6.18cm" right="3cm"
-		bottom="0cm" left="17.5cm">
-		<fo:block text-align="right"><xsl:value-of select="." /></fo:block>
-	</fo:block-container>
-</xsl:template>
-
-<xsl:template match="strong">	
-	<fo:inline font-weight="bold"><xsl:value-of select="." /></fo:inline>
-</xsl:template>
-
-<xsl:template match="emphasis">
-	<fo:inline font-style="italic"><xsl:value-of select="." /></fo:inline>
-</xsl:template>
-
-<xsl:template match="rechnung">
-	
-	<fo:block-container space-before="18pt" space-after="24pt">
-		<fo:table>
-			<fo:table-column width="75%" />
-			<fo:table-column width="25%" />
-			<fo:table-body>
-			<xsl:for-each select="posten">
-				<fo:table-row>
-					<fo:table-cell padding-bottom="6pt">
-						<fo:block><xsl:value-of select="title" /></fo:block>
-					</fo:table-cell>
-					<fo:table-cell>
-						<fo:block text-align="right" padding-bottom="6pt">
-							<xsl:value-of select="format-number(preis,'#.##0,00','de')" />
-							<!-- hier noch Eurozeichen einfügen? --> EUR</fo:block>
-					</fo:table-cell>
-				</fo:table-row>
-			</xsl:for-each>
-			<fo:table-row background-color="rgb(240,240,240)">
-				<fo:table-cell padding-top="6pt" padding-bottom="6pt">
-					<fo:block font-weight="bold">Gesamt</fo:block></fo:table-cell>
-				<fo:table-cell padding-top="6pt" padding-bottom="6pt">
-					<fo:block font-weight="bold" text-align="right">
-							<xsl:variable name="gesamt" select="sum(posten/preis)" />
-							<xsl:value-of select="format-number($gesamt,'#.##0,00','de')"
-							/> EUR
-					</fo:block>
-				</fo:table-cell>
-			</fo:table-row>
-				
-			</fo:table-body> </fo:table> <fo:block font-size="7pt">[Es besteht derzeit keine
-			Umsatzsteuerpflicht]</fo:block> </fo:block-container> </xsl:template>
-
-<xsl:template match="quote">
-	<xsl:text>&#187;</xsl:text><xsl:value-of select="."/><xsl:text>&#171;</xsl:text>
-</xsl:template>
-
-<xsl:template match="anlagen">
-	<fo:block font-size="9pt" space-before="15pt">Anlagen: <xsl:value-of select="." /></fo:block>
-</xsl:template>
 
 </xsl:stylesheet>
 	

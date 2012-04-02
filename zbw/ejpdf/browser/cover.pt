@@ -7,19 +7,25 @@
 
     <cover>
  
-        <portal_type tal:content="context/portal_type" />
+        <portal_type tal:content="view/portal_type" />
+        <id tal:content="context/getId" />
         <date tal:content="view/publish_date" />
 
         <!-- #TODO f. Journalarticle DOI -->
         <url tal:content="context/absolute_url" />
         <title tal:content="context/Title" />
 
-        <!-- TODO -->
-        <authors></authors>
+        <authors>
+            <tal:block tal:repeat="author view/authors">
+                <author>
+                    <name tal:content="author/name" />
+                    <affil tal:content="author/affil" />
+                </author>
+            </tal:block>
+        
+        </authors>
 
-        <abstract>abstract
-            <!--XXX we have the abstract only as HTML!!! -->
-        </abstract>
+        <abstract tal:content="structure view/clean_abstract" />
 
         <jels>
             <tal:block tal:repeat="jel context/jel">
