@@ -13,12 +13,17 @@
       permission="zope2.Public" />
 
 
-
 <browser:page
     name="cover_pdf"
     for="Products.eJournal.interfaces.marker.IPaper"
     class=".cover.PdfView"
      permission="cmf.ManagePortal" />
+
+<browser:page
+    name="cover_control"
+    for="Products.eJournal.interfaces.marker.IPaper"
+    class=".control.View"
+    permission="cmf.ManagePortal" />
 
 
 </configure>

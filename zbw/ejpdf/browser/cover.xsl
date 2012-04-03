@@ -8,9 +8,11 @@
 <xsl:template match="/">
 
     <!-- TODO:
-         -  hyphenate (Abstract)
-         -  footer
-         -  journalarticle sieht anders aus: kein portal_type, kleineres logo?, vol statt no
+         -  journalarticle sieht anders aus: 
+            -   kein portal_type
+            -   kleineres logo? 
+            -   vol statt no
+            -   zusätzlicher Block: Citation
     -->
 
 	<fo:root
@@ -106,6 +108,26 @@
                             </fo:inline>
                         </xsl:for-each>
                     </fo:block>
+
+                    <fo:block space-before="6px">
+                        <fo:inline font-weight="bold" padding-right="9px">Keywords</fo:inline> 
+                        <xsl:value-of select="/cover/keywords" />
+                    </fo:block>
+                    
+                    <fo:block space-before="6px">
+                        <fo:inline font-weight="bold" padding-right="9px">Correspondence</fo:inline> 
+                        <xsl:value-of select="/cover/correspondence" /> 
+                        E-mail:
+                        <fo:inline><xsl:value-of select="/cover/email" /></fo:inline>
+                    </fo:block>
+
+                    <fo:block font-size='10px' space-before="6px" font-style="italic">
+                        <xsl:value-of select="/cover/additional" /> 
+                    </fo:block>
+
+
+                    
+
 
 
                 </fo:flow>

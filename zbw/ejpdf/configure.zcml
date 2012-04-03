@@ -8,10 +8,16 @@
 <include package=".browser" />
 
 
- <adapter
+    <adapter
         for="Products.eJournal.interfaces.marker.IPaper"
         provides=".interfaces.ICover"
         factory=".adapters.Cover" />
+ 
+    <adapter for="Products.eJournal.interfaces.marker.IPaper"
+        provides=".interfaces.ICoverAnnotation"
+        factory=".adapters.CoverAnnotation" />
+
+
 
 </configure>
 

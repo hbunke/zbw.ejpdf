@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+<body>
+
+    <div metal:fill-slot="main">
+    
+        <h1>PDF Cover Config</h1>
+        <p>Configuration and generation of PDF Cover for <strong><span
+                tal:content="context/portal_type" /> <span
+                    tal:content="context/id" /></strong></p>
+
+        <form method="get" action="#"
+            tal:attributes="action
+            string:${context/absolute_url}/@@cover_pdf"
+            style="margin-top:12px;">
+            
+
+            <tal:block tal:define="ann view/annotations">
+
+            <div class="field">
+                <label>Keywords</label>
+                <div class="formHelp">Type keywords as they should appear on
+                    cover page</div>
+                <input type="text" name="keywords" size="80" 
+                tal:attributes="value ann/keywords" />    
+            </div>
+
+            <div class="field">
+                <label>Correspondence</label>
+                <div class="formHelp">Name, affiliation and address of contact
+                    person, but NOT email-address</div>
+                <textarea name="correspondence" rows="5" cols="40"><span
+                        tal:replace="ann/correspondence" /></textarea>
+            </div>
+
+            <div class="field">
+                <label>Correspondence Email</label>
+                <div class="formHelp">Email address of contact</div>
+                <input name="correspondence_email" size="80"
+                tal:attributes="value ann/email" />
+            </div>
+
+            <div class="field">
+                <label>Additional Information</label>
+                <div class="formHelp">Provides any additional infos, such as
+                    projects, financees etc.</div>
+                <textarea name="additional" value="" rows="5"
+                    cols="40"><span tal:replace="ann/additional" /></textarea>
+            </div>
+
+            </tal:block>
+            
+            <div style="text-align:center">
+            <input name="cover" value=" Make PDF Cover " type="submit"
+            class="context"  style="margin-top:18px; height:40px;
+            font-size:18px;"/>
+            </div>
+        
+        </form>
+
+
+    
+    </div>
+
+</body>
+</html>

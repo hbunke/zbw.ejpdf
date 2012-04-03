@@ -13,3 +13,7 @@ class ICover(Interface):
         """
         """
 
+class ICoverAnnotation(Interface):
+    """
+    Interface for storing form data from cover_control as Annotation on object
+    """

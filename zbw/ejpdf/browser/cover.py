@@ -10,8 +10,10 @@ from Products.CMFCore.utils import getToolByName
 from Products.ATContentTypes.utils import DT2dt
 #from datetime import date
 from BeautifulSoup import BeautifulSoup
-from zbw.ejpdf.interfaces import ICover
+from zbw.ejpdf.interfaces import ICover, ICoverAnnotation
 from zope.interface import Interface
+from zope.annotation.interfaces import IAnnotations
+
 
 
 
@@ -33,7 +35,6 @@ class IView(Interface):
         """
         """
 
-    
 
 class View(BrowserView):
     """
@@ -99,6 +100,42 @@ class View(BrowserView):
 
         return authors
 
+    
+    def uri(self):
+        """
+        """
+        pt = self.context.portal_type
+        if pt == "DiscussionPaper":
+            uri = self.context.absolute_url()
+        if pt == "JournalPaper":
+            uri = "http://dx.doi.org/10.5018/economics-ejournal.ja.%s" %self.context.getId()
+        return uri
+    
+
+    def annotations(self):
+        """
+        get zbw.coverdata annotations
+        """
+
+        ann = IAnnotations(self.context)
+        key = 'zbw.coverdata'
+        if key in ann:
+            data = ann[key]
+            keywords = data['keywords']
+            correspondence = data['correspondence']
+            email = data['correspondence_email']
+            additional = data['additional']
+            return dict(
+                    keywords = keywords,
+                    correspondence = correspondence,
+                    email = email,
+                    additional = additional)
+        return dict(
+                keywords = "",
+                correspondence = "",
+                email = "",
+                additional = "")
+        
 
 
 class PdfView(BrowserView):
@@ -107,6 +144,9 @@ class PdfView(BrowserView):
     """
 
     def __call__(self):
+        
+        #first store additional data from request
+        store = ICoverAnnotation(self.context)
         pdf = ICover(self.context)
         pdf = pdf.generate()
         pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
@@ -122,9 +162,6 @@ class PdfView(BrowserView):
             return "oops, something went wrong"
            
 
-
-
-    
 
 
     

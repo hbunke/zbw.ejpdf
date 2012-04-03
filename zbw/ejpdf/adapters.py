@@ -6,6 +6,8 @@ import os
 import tempfile
 from subprocess import Popen, PIPE
 from zope.component import getMultiAdapter
+from zope.annotation.interfaces import IAnnotations
+from persistent.dict import PersistentDict
 
 
 
@@ -64,6 +66,38 @@ class Cover(object):
                 os.unlink(xmltemp)
                 os.unlink(fofile)
         return False
+
+    
+
+        request = self.context.REQUEST
+        
+
+class CoverAnnotation(object):
+    """
+    store form values as annotation on object
+    """
+
+    def __init__(self, context):
+
+        self.context = context
+        self.request = self.context.REQUEST
+        ann = IAnnotations(self.context)
+        KEY="zbw.coverdata"
+       
+        if not ann.has_key(KEY):
+            ann[KEY] = PersistentDict()
+        self.ann = ann[KEY]
+
+        keys = ["keywords", "correspondence", "correspondence_email",
+                "additional"]
+        for key in keys:
+            if key in self.request:
+                self.ann[key] = self.request[key]
+            else:
+                self.ann[key] = ""
+
+
+       
 
 
 
