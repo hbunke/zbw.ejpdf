@@ -38,16 +38,19 @@
             <fo:static-content flow-name="xsl-region-after"
                 font-size="8pt" font-family="Helvetica">
                 <fo:block>
-                    © Author(s) 2012. Licensed under a Creative Commons License - Attribution-NonCommercial 2.0 Germany
+                    © Author(s) 2012. Licensed under a Creative Commons License
+                    - Attribution-NonCommercial 2.0 Germany
                 </fo:block>
             </fo:static-content>
 			
 				<fo:flow flow-name="xsl-region-body">
 					
                     <!-- Logo -->
-                    <fo:block-container absolute-position="fixed" top="1.5cm" left="1cm">
+                    <fo:block-container absolute-position="fixed" top="1.5cm" 
+                        left="1cm">
 						<fo:block >
-                            <fo:external-graphic src="file:///home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/example_files/logo3.tif" />
+                            <fo:external-graphic 
+                                src="file:///home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/example_files/logo3.tif" />
                         </fo:block>
                     </fo:block-container>
 

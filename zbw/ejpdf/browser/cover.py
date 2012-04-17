@@ -159,6 +159,7 @@ class PdfView(BrowserView):
             #import pdb; pdb.set_trace()
             self.context.REQUEST.RESPONSE.redirect(pdf)
         else:
+            #TODO Error handling
             return "oops, something went wrong"
            
 
