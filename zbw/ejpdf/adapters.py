@@ -37,6 +37,7 @@ class Cover(object):
         f.write(xml)
         f.close()
         
+        #XXX change!!!
         xsl = "/home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/browser/cover.xsl"
         
         pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
@@ -49,28 +50,27 @@ class Cover(object):
         stdin = open('/dev/null')
         stdout = stderr = PIPE
 
-        #import pdb; pdb.set_trace()
         p_xslt = Popen(xslt_cmd, stderr=stderr, stdin=stdin, stdout=stdout,
                 shell=True)
         status = p_xslt.wait()
         if status == 0:
-            #import pdb; pdb.set_trace()
             p_fop = Popen(fop_cmd, stderr=stderr, stdout=stdout, stdin=stdin,
                 shell=True)
             status = p_fop.wait()
             if status == 0:
-                os.unlink(xmltemp)
-                os.unlink(fofile)
                 return True
             else:
-                os.unlink(xmltemp)
-                os.unlink(fofile)
+                print p_fop.stderr.read()
+                
+        else:
+            print p_xslt.stderr.read()
+        
         return False
 
-    
-
         request = self.context.REQUEST
-        
+        os.unlink(xmltemp)
+        os.unlink(fofile)
+
 
 class CoverAnnotation(object):
     """

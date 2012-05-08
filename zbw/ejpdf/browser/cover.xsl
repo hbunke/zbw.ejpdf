@@ -45,7 +45,7 @@
 			
 				<fo:flow flow-name="xsl-region-body">
 					
-                    <!-- Logo -->
+                    <!-- Logo 
                     <fo:block-container absolute-position="fixed" top="1.5cm" 
                         left="1cm">
 						<fo:block >
@@ -53,6 +53,8 @@
                                 src="file:///home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/example_files/logo3.tif" />
                         </fo:block>
                     </fo:block-container>
+                    -->
+                    
 
                     <!-- infozeile -->
                     <fo:block-container space-before="6px"
@@ -64,7 +66,12 @@
                         <fo:block>
                             No.  <fo:inline><xsl:value-of select="/cover/id" /></fo:inline> |
                             <fo:inline><xsl:value-of select="/cover/date" /></fo:inline> |
-                            <fo:inline><xsl:value-of select="/cover/url" /></fo:inline>
+                            <!-- <fo:inline><xsl:value-of select="/cover/url" /></fo:inline> -->
+                            <fo:inline color="darkblue">
+                                <fo:basic-link external-destination="http://xyz.com">
+                                    <xsl:value-of select="//cover/url" />
+                                </fo:basic-link>
+                        </fo:inline>
                         </fo:block>
                     </fo:block-container>
 
@@ -87,8 +94,22 @@
                         font-style="italic"
                         space-before="0.5cm"
                         text-align="center">
-                    
-                        <xsl:apply-templates match="//author" />
+                        <fo:block>
+
+                            <!-- TODO: komma hinter letztem autor weg. evtl.
+                                 direkt aus plone the authors string übergeben
+                                 (mit 'and' etc.?) -->
+                            <xsl:for-each select="//author">
+                                 <fo:inline font-size="14pt" >
+                                    <xsl:value-of select="name" />,
+                                </fo:inline>
+                            </xsl:for-each>
+
+
+
+                            <!--    <xsl:apply-templates match="//author" />
+                                    -->
+                        </fo:block>
                     
                     </fo:block-container>
 
@@ -103,6 +124,8 @@
                         <xsl:value-of select="/cover/abstract/p[2]" />
                     
                     </fo:block>
+                    
+                    <fo:block-container font-size="10px">
 
                     <fo:block>
                         <fo:inline font-weight="bold" padding-right="9px">JEL </fo:inline>
@@ -116,6 +139,21 @@
                         <fo:inline font-weight="bold" padding-right="9px">Keywords</fo:inline> 
                         <xsl:value-of select="/cover/keywords" />
                     </fo:block>
+
+                    <fo:block space-before="6px">
+                        <fo:inline font-weight="bold" padding-right="9px">
+                            Authors
+                        </fo:inline>
+                        <xsl:for-each select="//author">
+                            <fo:block>
+                                <xsl:value-of select="name" />,
+                                <fo:inline font-style="italic">
+                                    <xsl:value-of select="affil" />
+                                </fo:inline>
+                            </fo:block>
+                        </xsl:for-each>
+                    
+                    </fo:block>
                     
                     <fo:block space-before="6px">
                         <fo:inline font-weight="bold" padding-right="9px">Correspondence</fo:inline> 
@@ -123,6 +161,9 @@
                         E-mail:
                         <fo:inline><xsl:value-of select="/cover/email" /></fo:inline>
                     </fo:block>
+
+
+                </fo:block-container>
 
                     <fo:block font-size='10px' space-before="6px" font-style="italic">
                         <xsl:value-of select="/cover/additional" /> 
@@ -150,18 +191,19 @@
 	
 </xsl:template>
 
+<!--
 <xsl:template match="//author">
 
-    <fo:block font-size="14pt" >
-        <xsl:value-of select="name" />
-    </fo:block>
-
+    <fo:inline font-size="14pt" >
+        <xsl:value-of select="name" />,
+    </fo:inline>
+    
     <fo:block font-size="11pt" space-after="6px">
         <xsl:value-of select="affil" />
     </fo:block>
 
 </xsl:template>
-
+-->
 
 
 </xsl:stylesheet>
