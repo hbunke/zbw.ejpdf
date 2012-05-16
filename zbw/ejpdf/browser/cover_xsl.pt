@@ -15,8 +15,8 @@
     <!-- TODO:
          -  journalarticle sieht anders aus: 
             -   kleineres logo? 
-            -   zusätzlicher Block: Citation
-            -   
+            XXX-   zusätzlicher Block: Citation ==> da weiter!XXX
+         
     -->
 
 	<fo:root
@@ -26,18 +26,29 @@
 	
 		<fo:layout-master-set>
 			
-			<fo:simple-page-master master-name="A4"
+			<fo:simple-page-master master-name="DiscussionPaper"
 				page-width="210mm" page-height="297mm"
 				margin-top="1.5cm" margin-bottom="1.25cm" margin-left="3.6cm"
 				margin-right="3.6cm">
 				<fo:region-body margin-top="2.5cm" />
 				<fo:region-before extent="2cm" />
 				<fo:region-after extent="1cm" />
+            </fo:simple-page-master>
+
+            <fo:simple-page-master master-name="JournalPaper"
+				page-width="176mm" page-height="250mm"
+				margin-top="1.5cm" margin-bottom="1.25cm" margin-left="3cm"
+				margin-right="2cm">
+				<fo:region-body margin-top="2.5cm" />
+				<fo:region-before extent="2cm" />
+				<fo:region-after extent="1cm" />
 			</fo:simple-page-master>
-		
-		</fo:layout-master-set>
-			
-        <fo:page-sequence master-reference="A4">
+        
+        </fo:layout-master-set>
+
+        <!-- dirty trick ;-) --> 
+        <fo:page-sequence tal:attributes="master-reference context/portal_type">
+               
 
             <fo:static-content flow-name="xsl-region-after"
                 font-size="8pt" font-family="Helvetica">
@@ -46,9 +57,8 @@
                     - Attribution-NonCommercial 2.0 Germany
                 </fo:block>
             </fo:static-content>
-			
-				<fo:flow flow-name="xsl-region-body">
-					
+            <fo:flow flow-name="xsl-region-body">
+						
                     <!-- Logo 
                     <fo:block-container absolute-position="fixed" top="1.5cm" 
                         left="1cm">
@@ -190,20 +200,8 @@
                     </fo:block>
 
 
-                    
 
-
-
-                </fo:flow>
-
-                <!-- footer 
-
-                <fo:flow flow-name="xls-region-after">
-                
-                                   
-                </fo:flow>
-                -->
-
+               </fo:flow>
 
 			</fo:page-sequence>
 
@@ -211,22 +209,6 @@
 	
 </xsl:template>
 
-<!--
-<xsl:template match="//author">
-
-    <fo:inline font-size="14pt" >
-        <xsl:value-of select="name" />,
-    </fo:inline>
-    
-    <fo:block font-size="11pt" space-after="6px">
-        <xsl:value-of select="affil" />
-    </fo:block>
-
-</xsl:template>
--->
-
 
 </xsl:stylesheet>
-	
-
 </metal:block>
