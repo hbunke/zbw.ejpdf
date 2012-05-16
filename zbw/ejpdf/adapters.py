@@ -22,29 +22,29 @@ class Cover(object):
     def generate(self):
         """
         """
+        
+        #TODO put this in config (file or registry)
         fop = "/home/bunke/bin/fop"
         fopconf="/home/bunke/.fop/fop.xconf"
         pdfdir = "/home/bunke/test/ejpdftest"
+
         xml_view = getMultiAdapter((self.context, self.context.REQUEST),
                 name="cover_xml")
+        xsl_view = getMultiAdapter((self.context, self.context.REQUEST),
+                name="cover_xsl")
         xml = xml_view()
+        xsl = xsl_view()
         xmltemp = tempfile.mktemp(suffix='.xml')
-        f = open(xmltemp, 'w')
+        xsltemp = tempfile.mktemp(suffix='.xsl')
         
-        #xml = unicode(xml, 'utf-8', errors="ignore")
-        xml = xml.encode('utf-8')
-        
-        f.write(xml)
-        f.close()
-        
-        #XXX change!!!
-        xsl = "/home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/browser/cover.xsl"
+        self.__tmpwrite(xmltemp, xml)
+        self.__tmpwrite(xsltemp, xsl)
         
         pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
                 self.context.getId())
 
         fofile = tempfile.mktemp(suffix='.fo')
-        xslt_cmd = "xsltproc -o %s -xinclude %s %s" %(fofile, xsl, xmltemp)
+        xslt_cmd = "xsltproc -o %s -xinclude %s %s" %(fofile, xsltemp, xmltemp)
         fop_cmd = "%s -c '%s'  '%s' '%s/%s'" %(fop, fopconf, fofile, pdfdir, pdfname)
         
         stdin = open('/dev/null')
@@ -69,7 +69,18 @@ class Cover(object):
 
         request = self.context.REQUEST
         os.unlink(xmltemp)
+        os.unlink(xsltemp)
         os.unlink(fofile)
+
+
+    def __tmpwrite(self, dat, content):
+        """
+        writes content to file
+        """
+        f = open(dat, 'w')
+        c = content.encode('utf-8')
+        f.write(c)
+        f.close()
 
 
 class CoverAnnotation(object):

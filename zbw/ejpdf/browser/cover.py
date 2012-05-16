@@ -163,6 +163,26 @@ class PdfView(BrowserView):
             return "oops, something went wrong"
            
 
+class XslView(BrowserView):
+    """
+    generates proper XSL based on portal type. No XSL in filesystem needed.
+    """
 
+    template = ViewPageTemplateFile("cover_xsl.pt")
+
+    def __call__(self):
+        self.request.RESPONSE.setHeader('Content-Type', 'text/xml')
+        return self.template()
+    
+    def get_volume(self):
+        """
+        returns Volume number of Journalarticle according to creation date
+        """
+        cyear = int(self.context.created().strftime('%Y'))
+        startyear = 2007
+        vol = cyear - startyear +1
+        return vol
+
+    
 
     
