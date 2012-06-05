@@ -141,22 +141,27 @@ class View(BrowserView):
         """
         generates citation string
         """
-
-        text = ""
         paper_view = getMultiAdapter((self.context, self.request),
                 name="paperView")
-        ja_view = getMultiAdapter((self.context, self.request), name="ja_view")
-        version = ja_view.last_version_info()
-        doi_url = "http://dx.doi.org/%s" %ja_view.get_doi()
-        text += paper_view.authors_as_string()
-        text += " (%s). " %ja_view.pubyear()
-        text += self.context.Title()
-        text += ".  Economics: The Open-Access, Open-Assessment E-Journal, "
-        text += "Vol. %s, %s" %(ja_view.get_volume(), self.context.getId())
+        text = paper_view.authors_as_string()
+        pt = self.context.portal_type
+        if pt == "JournalPaper":
+            type_view = getMultiAdapter((self.context, self.request), name="ja_view")
+            version = type_view.last_version_info()
+            doi_url = "http://dx.doi.org/%s" %type_view.get_doi()
+            text += " (%s). " %type_view.pubyear()
+            text += self.context.Title()
+            text += ".  Economics: The Open-Access, Open-Assessment E-Journal, "
+            text += "Vol. %s, %s" %(type_view.get_volume(), self.context.getId())
+            if version and version['number'] > 1:
+               text += "(Version %s)" %version['number']
+            text += ". %s" %doi_url
         
-        if version and version['number'] > 1:
-            text += "(Version %s)" %version['number']
-        text += ". %s" %doi_url
+        if pt == "DiscussionPaper":
+            type_view = getMultiAdapter((self.context, self.request), name="dp_view")
+            url = self.context.absolute_url()
+            text += type_view.cite_as()
+            text += " %s" %url
 
         return text
 

@@ -154,7 +154,7 @@
                     
                     </fo:block>
                     
-                    <fo:block-container font-size="10px">
+                    <fo:block-container font-size="10px" space-before="6px">
 
                     <fo:block>
                         <fo:inline font-weight="bold" padding-right="9px">JEL </fo:inline>
