@@ -15,14 +15,13 @@
     <!-- TODO:
          -  journalarticle sieht anders aus: 
             -   kleineres logo? 
-            XXX-   zusätzlicher Block: Citation ==> da weiter!XXX
-         
     -->
 
 	<fo:root
 	font-family="Times" 
-	font-selection-strategy="character-by-character" 
-	font-size="11pt">
+    font-selection-strategy="character-by-character" 
+    font-size="10pt"
+	>
 	
 		<fo:layout-master-set>
 			
@@ -32,16 +31,17 @@
 				margin-right="3.6cm">
 				<fo:region-body margin-top="2.5cm" />
 				<fo:region-before extent="2cm" />
-				<fo:region-after extent="1cm" />
+                <fo:region-after extent="1cm" />
             </fo:simple-page-master>
 
             <fo:simple-page-master master-name="JournalPaper"
 				page-width="176mm" page-height="250mm"
-				margin-top="1.5cm" margin-bottom="1.25cm" margin-left="3cm"
-				margin-right="2cm">
-				<fo:region-body margin-top="2.5cm" />
-				<fo:region-before extent="2cm" />
-				<fo:region-after extent="1cm" />
+				margin-top="1.5cm" margin-bottom="1cm" margin-left="2cm"
+                margin-right="2cm"
+                >
+            <fo:region-body margin-top="1.5cm" />
+				<fo:region-before extent="1cm" />
+				<fo:region-after extent="0cm" />
 			</fo:simple-page-master>
         
         </fo:layout-master-set>
@@ -49,7 +49,6 @@
         <!-- dirty trick ;-) --> 
         <fo:page-sequence tal:attributes="master-reference context/portal_type">
                
-
             <fo:static-content flow-name="xsl-region-after"
                 font-size="8pt" font-family="Helvetica">
                 <fo:block>
@@ -150,7 +149,7 @@
                         <xsl:value-of select="/cover/abstract/p" />
                     </fo:block>
     
-                    <fo:block text-align="justify" space-after="18px" space-before="12px">
+                    <fo:block text-align="justify" space-before="12px">
                         <xsl:value-of select="/cover/abstract/p[2]" />
                     
                     </fo:block>
@@ -192,14 +191,22 @@
                         <fo:inline><xsl:value-of select="/cover/email" /></fo:inline>
                     </fo:block>
 
-
                 </fo:block-container>
 
-                    <fo:block font-size='10px' space-before="6px" font-style="italic">
+                <fo:block-container space-before="12px" font-size="8px">
+                    
+                    <fo:block>
+                    <fo:inline font-weight="bold" padding-right="6px">Citation </fo:inline>
+                        <xsl:value-of select="/cover/citation" />
+                    </fo:block>
+                    
+                    <fo:block space-before="6px" font-style="italic">
                         <xsl:value-of select="/cover/additional" /> 
                     </fo:block>
+                
+                </fo:block-container>
 
-
+               
 
                </fo:flow>
 

@@ -39,6 +39,9 @@
             <email tal:content="ann/email" />
             <additional tal:content="ann/additional" />
         </tal:block>
+        
+        <citation tal:content="view/citation_string" />
+
 
     </cover>
 

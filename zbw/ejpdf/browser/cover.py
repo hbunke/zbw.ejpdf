@@ -13,7 +13,7 @@ from BeautifulSoup import BeautifulSoup
 from zbw.ejpdf.interfaces import ICover, ICoverAnnotation
 from zope.interface import Interface
 from zope.annotation.interfaces import IAnnotations
-
+from zope.component import getMultiAdapter
 
 
 
@@ -136,6 +136,29 @@ class View(BrowserView):
                 email = "",
                 additional = "")
         
+        
+    def citation_string(self):
+        """
+        generates citation string
+        """
+
+        text = ""
+        paper_view = getMultiAdapter((self.context, self.request),
+                name="paperView")
+        ja_view = getMultiAdapter((self.context, self.request), name="ja_view")
+        version = ja_view.last_version_info()
+        doi_url = "http://dx.doi.org/%s" %ja_view.get_doi()
+        text += paper_view.authors_as_string()
+        text += " (%s). " %ja_view.pubyear()
+        text += self.context.Title()
+        text += ".  Economics: The Open-Access, Open-Assessment E-Journal, "
+        text += "Vol. %s, %s" %(ja_view.get_volume(), self.context.getId())
+        
+        if version and version['number'] > 1:
+            text += "(Version %s)" %version['number']
+        text += ". %s" %doi_url
+
+        return text
 
 
 class PdfView(BrowserView):
@@ -183,6 +206,7 @@ class XslView(BrowserView):
         vol = cyear - startyear +1
         return vol
 
+    
     
 
     
