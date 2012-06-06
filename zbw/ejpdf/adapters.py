@@ -24,8 +24,11 @@ class Cover(object):
         """
         
         #TODO put this in config (file or registry)
-        fop = "/home/bunke/bin/fop"
-        fopconf="/home/bunke/.fop/fop.xconf"
+        
+        fop = "fop"
+        fopconf="/home/ejournal/etc/fopconf.xml"
+        
+        #TODO change this
         pdfdir = "/home/bunke/test/ejpdftest"
 
         xml_view = getMultiAdapter((self.context, self.context.REQUEST),
@@ -44,8 +47,12 @@ class Cover(object):
                 self.context.getId())
 
         fofile = tempfile.mktemp(suffix='.fo')
+        
+        #TODO bei neuem FOP ist der xsltproc nicht nötig, sondern mit fop in
+        #einem Schritt zu erledigen
         xslt_cmd = "xsltproc -o %s -xinclude %s %s" %(fofile, xsltemp, xmltemp)
-        fop_cmd = "%s -c '%s'  '%s' '%s/%s'" %(fop, fopconf, fofile, pdfdir, pdfname)
+        
+        fop_cmd = "%s -c '%s' '%s' '%s/%s'" %(fop, fopconf, fofile, pdfdir, pdfname)
         
         stdin = open('/dev/null')
         stdout = stderr = PIPE

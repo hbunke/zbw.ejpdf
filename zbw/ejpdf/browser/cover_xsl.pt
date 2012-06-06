@@ -13,8 +13,10 @@
 <xsl:template match="/">
 
     <!-- TODO:
-         -  journalarticle sieht anders aus: 
-            -   kleineres logo? 
+         -  Fußzeile Journalarticle steht Germany in zweiter Zeile   
+         -  Hyphenation wieder einbauen
+         -  Logodatei in anderen Pfad legen (ej/data z.B. oder evtl. als ressource in plone
+         -  URL in Infozeile
     -->
 
 	<fo:root
@@ -36,10 +38,9 @@
 
             <fo:simple-page-master master-name="JournalPaper"
 				page-width="176mm" page-height="250mm"
-				margin-top="1.5cm" margin-bottom="1cm" margin-left="2cm"
-                margin-right="2cm"
-                >
-            <fo:region-body margin-top="1.5cm" />
+				margin-top="1.5cm" margin-bottom="1cm" margin-left="3cm"
+                margin-right="1.5cm">
+                <fo:region-body margin-top="1.5cm" />
 				<fo:region-before extent="1cm" />
 				<fo:region-after extent="0cm" />
 			</fo:simple-page-master>
@@ -52,23 +53,42 @@
             <fo:static-content flow-name="xsl-region-after"
                 font-size="8pt" font-family="Helvetica">
                 <fo:block>
-                    © Author(s) 2012. Licensed under a Creative Commons License
+                    © Author(s) <fo:inline tal:replace="view/get_publish_year" />. Licensed under a Creative Commons License
                     - Attribution-NonCommercial 2.0 Germany
                 </fo:block>
             </fo:static-content>
             <fo:flow flow-name="xsl-region-body">
 						
-                    <!-- Logo 
-                    <fo:block-container absolute-position="fixed" top="1.5cm" 
+                <!-- Logo --> 
+                
+                <xsl:if test="/cover/portal_type = 'Discussion Paper'">
+                    <fo:block-container absolute-position="fixed" top="0.5cm" 
                         left="1cm">
-						<fo:block >
+                        <fo:block >
+                            <!-- TODO Logo woanders hin, bzw. gleich in Plone
+                                 resource directory laden -->
                             <fo:external-graphic 
+                                content-height="100%" content-width="100%"
                                 src="file:///home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/example_files/logo3.tif" />
                         </fo:block>
                     </fo:block-container>
-                    -->
-                    
 
+                </xsl:if>
+                    
+               <xsl:if test="/cover/portal_type = 'Journal Article'">
+                    <fo:block-container absolute-position="fixed" top="0.5cm" 
+                        left="1cm">
+                        <fo:block >
+                            <!-- TODO Logo woanders hin, bzw. gleich in Plone
+                                 resource directory laden -->
+                            <fo:external-graphic 
+                                content-height="75%" content-width="75%"
+                                src="file:///home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/example_files/logo3.tif" />
+                        </fo:block>
+                    </fo:block-container>
+
+                </xsl:if>
+                
                     <!-- infozeile -->
                     <fo:block-container space-before="6px"
                         font-family="Helvetica"
@@ -97,12 +117,12 @@
                             
                             <fo:inline><xsl:value-of select="/cover/id" /></fo:inline> |
                             <fo:inline><xsl:value-of select="/cover/date" /></fo:inline> |
-                            <!-- <fo:inline><xsl:value-of select="/cover/url" /></fo:inline> -->
                             <fo:inline color="darkblue">
                                 <fo:basic-link external-destination="http://xyz.com">
                                     <xsl:value-of select="//cover/url" />
                                 </fo:basic-link>
-                        </fo:inline>
+                            </fo:inline>
+                        
                         </fo:block>
                     </fo:block-container>
 
@@ -128,7 +148,7 @@
                         <fo:block>
 
                             <xsl:for-each select="//author">
-                                 <fo:inline font-size="14pt" >
+                                 <fo:inline font-size="14pt" keep-together.within-line="always">
                                      <xsl:value-of select="name" />
                                      <xsl:if test="position() != last()">, </xsl:if>
                                 </fo:inline>
@@ -144,7 +164,7 @@
 
                     
                     <!-- abstract -->
-                    <fo:block text-align="justify" space-before="18px" language="en" hyphenate="true">
+                    <fo:block text-align="justify" space-before="18px" language="en" hyphenate="false">
                         <fo:inline font-weight="bold" padding-right="9px">Abstract </fo:inline>
                         <xsl:value-of select="/cover/abstract/p" />
                     </fo:block>

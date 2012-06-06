@@ -210,6 +210,17 @@ class XslView(BrowserView):
         startyear = 2007
         vol = cyear - startyear +1
         return vol
+    
+    def get_publish_year(self):
+        """
+        returns year of creation date
+        """
+        obj = self.context
+        #import pdb; pdb.set_trace()
+        obj_date = DT2dt(self.context.created())
+        obj_date = obj_date.strftime("%Y")
+        return obj_date
+
 
     
     
