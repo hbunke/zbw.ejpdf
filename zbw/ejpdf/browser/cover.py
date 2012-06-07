@@ -221,7 +221,6 @@ class XslView(BrowserView):
         obj_date = obj_date.strftime("%Y")
         return obj_date
 
-
     
     
 

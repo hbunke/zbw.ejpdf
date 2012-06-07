@@ -57,21 +57,24 @@ class Cover(object):
         stdin = open('/dev/null')
         stdout = stderr = PIPE
 
+
         p_xslt = Popen(xslt_cmd, stderr=stderr, stdin=stdin, stdout=stdout,
                 shell=True)
-        status = p_xslt.wait()
-        if status == 0:
+        status_xslt = p_xslt.wait()
+        if status_xslt == 0:
+
             p_fop = Popen(fop_cmd, stderr=stderr, stdout=stdout, stdin=stdin,
                 shell=True)
-            status = p_fop.wait()
-            if status == 0:
+            status_fop = p_fop.wait()
+            if status_fop == 0:
                 return True
             else:
+                print p_fop.stdout.read()
                 print p_fop.stderr.read()
                 
         else:
             print p_xslt.stderr.read()
-        
+       
         return False
 
         request = self.context.REQUEST

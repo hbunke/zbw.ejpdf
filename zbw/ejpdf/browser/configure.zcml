@@ -5,6 +5,13 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
 >
 
+
+ <browser:resourceDirectory
+      name="zbw.ejpdf"
+      directory="resources"
+      />
+
+
 <browser:page
       name="cover_xml"
       for="Products.eJournal.interfaces.marker.IPaper"

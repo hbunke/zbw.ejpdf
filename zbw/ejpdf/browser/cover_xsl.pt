@@ -9,17 +9,18 @@
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
 								version="1.0">
 <xsl:decimal-format name="de" decimal-separator="," grouping-separator="."/>
-								
+
+
 <xsl:template match="/">
 
-    <!-- TODO:
+<!-- TODO:
          -  Fußzeile Journalarticle steht Germany in zweiter Zeile   
          -  Hyphenation wieder einbauen
-         -  Logodatei in anderen Pfad legen (ej/data z.B. oder evtl. als ressource in plone
-         -  URL in Infozeile
     -->
 
-	<fo:root
+<xsl:param name="url" select="/cover/url" />
+
+    <fo:root
 	font-family="Times" 
     font-selection-strategy="character-by-character" 
     font-size="10pt"
@@ -51,25 +52,26 @@
         <fo:page-sequence tal:attributes="master-reference context/portal_type">
                
             <fo:static-content flow-name="xsl-region-after"
-                font-size="8pt" font-family="Helvetica">
+                font-size="8px" font-family="Helvetica">
                 <fo:block>
                     © Author(s) <fo:inline tal:replace="view/get_publish_year" />. Licensed under a Creative Commons License
                     - Attribution-NonCommercial 2.0 Germany
                 </fo:block>
             </fo:static-content>
-            <fo:flow flow-name="xsl-region-body">
+            <fo:flow flow-name="xsl-region-body"
+                tal:define="navroot context/@@plone_portal_state/navigation_root_url;
+                            logo    string:${navroot}/++resource++zbw.ejpdf/logo3.tif;
+                            url string:{context/absolute_url}">
 						
                 <!-- Logo --> 
                 
                 <xsl:if test="/cover/portal_type = 'Discussion Paper'">
                     <fo:block-container absolute-position="fixed" top="0.5cm" 
                         left="1cm">
-                        <fo:block >
-                            <!-- TODO Logo woanders hin, bzw. gleich in Plone
-                                 resource directory laden -->
+                        <fo:block>
                             <fo:external-graphic 
                                 content-height="100%" content-width="100%"
-                                src="file:///home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/example_files/logo3.tif" />
+                                tal:attributes="src logo" />
                         </fo:block>
                     </fo:block-container>
 
@@ -79,11 +81,9 @@
                     <fo:block-container absolute-position="fixed" top="0.5cm" 
                         left="1cm">
                         <fo:block >
-                            <!-- TODO Logo woanders hin, bzw. gleich in Plone
-                                 resource directory laden -->
                             <fo:external-graphic 
                                 content-height="75%" content-width="75%"
-                                src="file:///home/bunke/ejdev/zbw.ejpdf/zbw/ejpdf/example_files/logo3.tif" />
+                                tal:attributes="src logo" />
                         </fo:block>
                     </fo:block-container>
 
@@ -118,8 +118,11 @@
                             <fo:inline><xsl:value-of select="/cover/id" /></fo:inline> |
                             <fo:inline><xsl:value-of select="/cover/date" /></fo:inline> |
                             <fo:inline color="darkblue">
-                                <fo:basic-link external-destination="http://xyz.com">
-                                    <xsl:value-of select="//cover/url" />
+                                <fo:basic-link>
+                                    <xsl:attribute name="external-destination">
+                                        <xsl:value-of select="$url" />
+                                    </xsl:attribute>
+                                    <xsl:value-of select="$url" />
                                 </fo:basic-link>
                             </fo:inline>
                         
