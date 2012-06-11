@@ -13,7 +13,10 @@ from BeautifulSoup import BeautifulSoup
 from zbw.ejpdf.interfaces import ICover, ICoverAnnotation
 from zope.interface import Interface
 from zope.annotation.interfaces import IAnnotations
-from zope.component import getMultiAdapter
+from zope.component import getMultiAdapter, getUtility
+from plone.registry.interfaces import IRegistry
+from zbw.ejpdf.interfaces import ICoverSettings
+
 
 
 
@@ -172,7 +175,12 @@ class PdfView(BrowserView):
     """
 
     def __call__(self):
+        """
+        """
         
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(ICoverSettings)
+
         #first store additional data from request
         store = ICoverAnnotation(self.context)
         pdf = ICover(self.context)
@@ -182,9 +190,7 @@ class PdfView(BrowserView):
         if pdf:
             self.context.REQUEST.RESPONSE.setHeader('Content-Type', 'application/pdf')
             
-            #XXX change URL 
-            pdf = "http://localhost:12000/%s" %pdfname
-            #import pdb; pdb.set_trace()
+            pdf = "%s/%s" %(settings.pdf_url, pdfname)
             self.context.REQUEST.RESPONSE.redirect(pdf)
         else:
             #TODO Error handling

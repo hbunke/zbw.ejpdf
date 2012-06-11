@@ -8,6 +8,25 @@
 <include package=".browser" />
 
 
+  <!-- setup needed for control panel -->
+    <genericsetup:registerProfile
+      name="default"
+      title="zbw.ejPDF"
+      directory="profiles/default"
+      description="Generates CoverPDF"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+ 
+  <!-- Control Panel -->
+    <browser:page
+        name="ejpdf_settings"
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        class=".controlpanel.CoverControlPanel"
+        permission="cmf.ManagePortal" 
+        />
+
+
+
     <adapter
         for="Products.eJournal.interfaces.marker.IPaper"
         provides=".interfaces.ICover"

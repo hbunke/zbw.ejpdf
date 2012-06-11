@@ -6,8 +6,11 @@ import os
 import tempfile
 from subprocess import Popen, PIPE
 from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.annotation.interfaces import IAnnotations
 from persistent.dict import PersistentDict
+from plone.registry.interfaces import IRegistry
+from zbw.ejpdf.interfaces import ICoverSettings
 
 
 
@@ -22,15 +25,16 @@ class Cover(object):
     def generate(self):
         """
         """
-        
-        #TODO put this in config (file or registry)
-        
-        fop = "fop"
-        fopconf="/home/ejournal/etc/fopconf.xml"
-        
-        #TODO change this
-        pdfdir = "/home/bunke/test/ejpdftest"
 
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(ICoverSettings)
+
+        if settings.fop_cmd:
+            fop = settings.fop
+        else:
+            fop  = 'fop'
+        fop_conf = settings.fop_conf
+        
         xml_view = getMultiAdapter((self.context, self.context.REQUEST),
                 name="cover_xml")
         xsl_view = getMultiAdapter((self.context, self.context.REQUEST),
@@ -46,41 +50,26 @@ class Cover(object):
         pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
                 self.context.getId())
 
-        fofile = tempfile.mktemp(suffix='.fo')
-        
-        #TODO bei neuem FOP ist der xsltproc nicht nötig, sondern mit fop in
-        #einem Schritt zu erledigen
-        xslt_cmd = "xsltproc -o %s -xinclude %s %s" %(fofile, xsltemp, xmltemp)
-        
-        fop_cmd = "%s -c '%s' '%s' '%s/%s'" %(fop, fopconf, fofile, pdfdir, pdfname)
+        fop_cmd = "%s -c '%s' -xml '%s' -xsl '%s' '%s/%s'" %(fop, fop_conf,
+                    xmltemp, xsltemp, settings.pdf_dir, pdfname)
         
         stdin = open('/dev/null')
         stdout = stderr = PIPE
 
-
-        p_xslt = Popen(xslt_cmd, stderr=stderr, stdin=stdin, stdout=stdout,
-                shell=True)
-        status_xslt = p_xslt.wait()
-        if status_xslt == 0:
-
-            p_fop = Popen(fop_cmd, stderr=stderr, stdout=stdout, stdin=stdin,
-                shell=True)
-            status_fop = p_fop.wait()
-            if status_fop == 0:
-                return True
-            else:
-                print p_fop.stdout.read()
-                print p_fop.stderr.read()
-                
+        p_fop = Popen(fop_cmd, stderr=stderr, stdout=stdout, stdin=stdin,
+            shell=True)
+        status_fop = p_fop.wait()
+        if status_fop == 0:
+            return True
         else:
-            print p_xslt.stderr.read()
-       
+            print p_fop.stdout.read()
+            print p_fop.stderr.read()
+                
         return False
 
         request = self.context.REQUEST
         os.unlink(xmltemp)
         os.unlink(xsltemp)
-        os.unlink(fofile)
 
 
     def __tmpwrite(self, dat, content):
