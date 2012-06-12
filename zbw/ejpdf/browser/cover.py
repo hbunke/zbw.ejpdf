@@ -146,7 +146,10 @@ class View(BrowserView):
         """
         paper_view = getMultiAdapter((self.context, self.request),
                 name="paperView")
-        text = paper_view.authors_as_string()
+        
+        text = u""
+        
+        text += unicode(paper_view.authors_as_string(), 'utf-8')
         pt = self.context.portal_type
         if pt == "JournalPaper":
             type_view = getMultiAdapter((self.context, self.request), name="ja_view")
