@@ -20,8 +20,7 @@
 <xsl:param name="url" select="/cover/url" />
 
     <fo:root
-	font-family="Times" 
-    font-selection-strategy="character-by-character" 
+	font-family="Times New Roman" 
     font-size="10pt"
 	>
 	
