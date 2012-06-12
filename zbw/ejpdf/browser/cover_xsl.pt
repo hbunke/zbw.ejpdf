@@ -14,7 +14,6 @@
 <xsl:template match="/">
 
 <!-- TODO:
-         -  Fußzeile Journalarticle steht Germany in zweiter Zeile   
          -  Hyphenation wieder einbauen
     -->
 
@@ -52,7 +51,7 @@
         <fo:page-sequence tal:attributes="master-reference context/portal_type">
                
             <fo:static-content flow-name="xsl-region-after"
-                font-size="8px" font-family="Helvetica">
+                font-size="7pt" font-family="Helvetica">
                 <fo:block>
                     © Author(s) <fo:inline tal:replace="view/get_publish_year" />. Licensed under a Creative Commons License
                     - Attribution-NonCommercial 2.0 Germany
@@ -216,7 +215,7 @@
 
                 </fo:block-container>
 
-                <fo:block-container space-before="12px" font-size="8px">
+                <fo:block-container space-before="12px" font-size="8pt">
                     
                     <fo:block>
                     <fo:inline font-weight="bold" padding-right="6px">Citation </fo:inline>
