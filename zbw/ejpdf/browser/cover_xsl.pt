@@ -8,13 +8,11 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
 								version="1.0">
-<xsl:decimal-format name="de" decimal-separator="," grouping-separator="."/>
-
 
 <xsl:template match="/">
 
-<!-- TODO:
-         -  Hyphenation wieder einbauen
+    <!-- TODO:
+         -  work on hyphenation
     -->
 
 <xsl:param name="url" select="/cover/url" />

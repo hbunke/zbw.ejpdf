@@ -12,6 +12,7 @@ from persistent.dict import PersistentDict
 from plone.registry.interfaces import IRegistry
 from zbw.ejpdf.interfaces import ICoverSettings
 
+import logging
 
 
 class Cover(object):
@@ -59,11 +60,16 @@ class Cover(object):
         p_fop = Popen(fop_cmd, stderr=stderr, stdout=stdout, stdin=stdin,
             shell=True)
         status_fop = p_fop.wait()
+        
         if status_fop == 0:
             return True
+        
         else:
-            print p_fop.stdout.read()
-            print p_fop.stderr.read()
+            error = "[FOP Error]: " 
+            #error += p_fop.stdout.read()
+            error += p_fop.stderr.read()
+            logger = logging.getLogger('Plone')
+            logger.error(error)
                 
         return False
 
