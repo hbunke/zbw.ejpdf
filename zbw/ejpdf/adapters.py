@@ -12,7 +12,6 @@ from persistent.dict import PersistentDict
 from plone.registry.interfaces import IRegistry
 from zbw.ejpdf.interfaces import ICoverSettings
 
-import logging
 
 
 class Cover(object):
@@ -21,7 +20,6 @@ class Cover(object):
     
     def __init__(self, context):
         self.context = context
-
 
     def generate(self):
         """
@@ -61,17 +59,11 @@ class Cover(object):
             shell=True)
         status_fop = p_fop.wait()
         
-        if status_fop == 0:
-            return True
-        
-        else:
-            error = "[FOP Error]: " 
-            #error += p_fop.stdout.read()
-            error += p_fop.stderr.read()
-            logger = logging.getLogger('Plone')
-            logger.error(error)
-                
-        return False
+        if status_fop != 0:
+            #we are splitting the fop error message. can't find an option in
+            #fop cli to suppress the USAGE information in case of errors
+            fop_msg = p_fop.stderr.read().rsplit('fop foo.fo -awt')[1]
+            raise FOPError(fop_msg)
 
         request = self.context.REQUEST
         os.unlink(xmltemp)
@@ -113,7 +105,10 @@ class CoverAnnotation(object):
                 self.ann[key] = ""
 
 
-       
+class FOPError(Exception):
+    pass
+
+   
 
 
 

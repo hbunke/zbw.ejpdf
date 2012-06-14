@@ -188,16 +188,12 @@ class PdfView(BrowserView):
         store = ICoverAnnotation(self.context)
         pdf = ICover(self.context)
         pdf = pdf.generate()
+        #NOTE errors will (should ;-) be catched in ICover adapter
         pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
                 self.context.getId())
-        if pdf:
-            self.context.REQUEST.RESPONSE.setHeader('Content-Type', 'application/pdf')
-            
-            pdf = "%s/%s" %(settings.pdf_url, pdfname)
-            self.context.REQUEST.RESPONSE.redirect(pdf)
-        else:
-            #TODO Error handling
-            return "oops, something went wrong"
+        self.context.REQUEST.RESPONSE.setHeader('Content-Type', 'application/pdf')
+        pdf = "%s/%s" %(settings.pdf_url, pdfname)
+        self.context.REQUEST.RESPONSE.redirect(pdf)
            
 
 class XslView(BrowserView):
