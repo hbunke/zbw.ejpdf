@@ -62,7 +62,8 @@ class Cover(object):
         if status_fop != 0:
             #we are splitting the fop error message. can't find an option in
             #fop cli to suppress the USAGE information in case of errors
-            fop_msg = p_fop.stderr.read().rsplit('fop foo.fo -awt')[1]
+            #fop_msg = p_fop.stderr.read().rsplit('fop foo.fo -awt')[1]
+            fop_msg = p_fop.stderr.read()
             raise FOPError(fop_msg)
 
         request = self.context.REQUEST
