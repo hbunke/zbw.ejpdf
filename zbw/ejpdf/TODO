@@ -1,0 +1,23 @@
+
+-   Autoren auswahl in control: alle Autoren Listen, mit Feld für Affiliations
+    (Vorgabe aus Datenbank); außerdem checkbox für 'correspondence
+
+-   Autor Correspondence mit Briefsymbol o.ä. kennzeichnen
+
+-   Affiliations *nicht* kursiv
+
+-   Additional info direkt unter correspondence (vor citation)
+
+-   Special Issue bei Discussionpaper:
+    "Paper submitted to the Special Issue:
+    <Title>
+    ==> geht nicht, da das momentan immer noch mit im Abstract steht! 
+
+=========
+
+-   grundsätzliche Umstellung: keine XML und XSL Datei mehr produzieren,
+    sondern nur .fo! Vereinfacht die Sache erheblich.
+    ==>
+        -   einen neuen @@fo_view schreiben, der aus py und pt eine fo ansicht bzw.
+            Datei baut. die anderen können parallel erstmal bestehen bleiben,
+            sicherheitshalber

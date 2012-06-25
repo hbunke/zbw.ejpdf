@@ -27,6 +27,28 @@
                 tal:attributes="value ann/keywords" />    
             </div>
 
+            <label>Authors</label>
+            <div class="formHelp">Change author information here. Please also check the author under who's name
+            the correspondence address will appear</div>
+            <div class="fieldset" style="font-size:11px;">
+                
+                <div tal:repeat="author view/authors" style="background:rgb(244,244,244); padding:3px 3px 3px 12px;">
+                    <input type="radio" name="corresponding_author" tal:attributes="value author/id" 
+                        style="margin-left:-12px; margin-top:-2px; font-size:24pt;"/>
+                    <strong><span tal:replace="author/name" /></strong>
+                
+                <div class="field" style="margin-left:6px">
+                    <label></label>
+                    <input type="text" name="affil" size="80"
+                        tal:attributes="value author/affil" />
+                </div>
+                
+
+            </div>
+                    
+            </div>
+
+
             <div class="field">
                 <label>Correspondence</label>
                 <div class="formHelp">Name, affiliation and address of contact
@@ -34,13 +56,15 @@
                 <textarea name="correspondence" rows="5" cols="40"><span
                         tal:replace="ann/correspondence" /></textarea>
             </div>
-
+            
+            <!--
             <div class="field">
                 <label>Correspondence Email</label>
                 <div class="formHelp">Email address of contact</div>
                 <input name="correspondence_email" size="80"
                 tal:attributes="value ann/email" />
             </div>
+            -->
 
             <div class="field">
                 <label>Additional Information</label>

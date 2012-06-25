@@ -18,33 +18,20 @@ from plone.registry.interfaces import IRegistry
 from zbw.ejpdf.interfaces import ICoverSettings
 
 
-
-
 class IView(Interface):
-    
+
     def publish_date():
         """
         """
-    
-    def clean_abstract():
-        """
-        """
 
-    def portal_type():
-        """
-        """
-
-    def authors():
+    def get_publish_year():
         """
         """
 
 
 class View(BrowserView):
-    """
-    view for xml generation for coverpage with rel. data
-    """
 
-    template = ViewPageTemplateFile("cover.pt")
+    template = ViewPageTemplateFile("fo.pt")
 
     def __call__(self):
         self.request.RESPONSE.setHeader('Content-Type', 'text/xml')
@@ -61,27 +48,29 @@ class View(BrowserView):
         obj_date = obj_date.strftime("%B %d, %Y")
         return obj_date
 
-    
-    def clean_abstract(self):
-        """
-        """
-        html = self.context.getAbstract()
-        soup = BeautifulSoup(html, convertEntities=BeautifulSoup.HTML_ENTITIES)
-        return unicode(soup)
 
-    def portal_type(self):
+    def get_publish_year(self):
         """
-        returns proper portal type
+        returns year of creation date
+        """
+        obj = self.context
+        #import pdb; pdb.set_trace()
+        obj_date = DT2dt(self.context.created())
+        obj_date = obj_date.strftime("%Y")
+        return obj_date
+
+
+    def uri(self):
+        """
         """
         pt = self.context.portal_type
         if pt == "DiscussionPaper":
-            pt = "Discussion Paper"
+            uri = self.context.absolute_url()
         if pt == "JournalPaper":
-            pt = "Journal Article"
+            uri = "http://dx.doi.org/10.5018/economics-ejournal.ja.%s" %self.context.getId()
+        return uri
 
-        return pt
 
-    
     def authors(self):
         """
         returns dicts with fullname and affiliation
@@ -103,17 +92,15 @@ class View(BrowserView):
 
         return authors
 
-    
-    def uri(self):
+
+    def clean_abstract(self):
         """
         """
-        pt = self.context.portal_type
-        if pt == "DiscussionPaper":
-            uri = self.context.absolute_url()
-        if pt == "JournalPaper":
-            uri = "http://dx.doi.org/10.5018/economics-ejournal.ja.%s" %self.context.getId()
-        return uri
-    
+        html = self.context.getAbstract()
+        soup = BeautifulSoup(html, convertEntities=BeautifulSoup.HTML_ENTITIES)
+        soup = soup.findAll('p')
+        #return unicode(soup)
+        return soup
 
     def annotations(self):
         """
@@ -135,8 +122,8 @@ class View(BrowserView):
                 keywords = "",
                 correspondence = "",
                 additional = "")
-        
-        
+
+
     def citation_string(self):
         """
         generates citation string
@@ -168,79 +155,12 @@ class View(BrowserView):
 
         return text
 
-
-class PdfView(BrowserView):
-    """
-    generates and shows pdf
-    """
-
-    def __call__(self):
+    def is_last_author(self, author):
         """
         """
-        
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(ICoverSettings)
-
-        #first store additional data from request
-        store = ICoverAnnotation(self.context)
-        pdf = ICover(self.context)
-        pdf = pdf.generate()
-        #NOTE errors will (should ;-) be catched in ICover adapter
-        pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
-                self.context.getId())
-        self.context.REQUEST.RESPONSE.setHeader('Content-Type', 'application/pdf')
-        pdf = "%s/%s" %(settings.pdf_url, pdfname)
-        self.context.REQUEST.RESPONSE.redirect(pdf)
-           
-
-class XslView(BrowserView):
-    """
-    generates proper XSL based on portal type. No XSL in filesystem needed.
-    """
-
-    template = ViewPageTemplateFile("cover_xsl.pt")
-
-    def __call__(self):
-        self.request.RESPONSE.setHeader('Content-Type', 'text/xml')
-        return self.template()
-    
-    def get_volume(self):
-        """
-        returns Volume number of Journalarticle according to creation date
-        """
-        cyear = int(self.context.created().strftime('%Y'))
-        startyear = 2007
-        vol = cyear - startyear +1
-        return vol
-    
-    def get_publish_year(self):
-        """
-        returns year of creation date
-        """
-        obj = self.context
-        #import pdb; pdb.set_trace()
-        obj_date = DT2dt(self.context.created())
-        obj_date = obj_date.strftime("%Y")
-        return obj_date
-    
-    def special_issue(self):
-        """
-        checks if paper has been published in Special Issue
-        """
-        obj = self.context
-        paper_view = getMultiAdapter((self.context, self.request),
-                name="paperView")
-        si = paper_view.getSpecialIssues()
-        if si:
-            obj = si[0].getObject()
-            title = obj.Title()
-            return title
+        authors = self.authors()
+        if not author == authors[-1]:
+            return True
         return False
-        
 
 
-
-    
-    
-
-    

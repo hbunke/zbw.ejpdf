@@ -41,6 +41,12 @@
     class=".control.View"
     permission="cmf.ManagePortal" />
 
+<browser:page
+    name="cover_fo"
+    for="Products.eJournal.interfaces.marker.IPaper"
+    class=".fo.View"
+    allowed_interface=".fo.IView"
+    permission="zope2.Public" />
 
 </configure>
 

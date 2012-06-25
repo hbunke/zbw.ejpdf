@@ -36,7 +36,6 @@
         <tal:block tal:define="ann view/annotations">
             <keywords tal:content="ann/keywords" />    
             <correspondence tal:content="ann/correspondence" />
-            <email tal:content="ann/email" />
             <additional tal:content="ann/additional" />
         </tal:block>
         

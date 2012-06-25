@@ -24,7 +24,6 @@ class View(BrowserView):
 
     def __call__(self):
         return self.template()
-
     
     def annotations(self):
         """
@@ -37,21 +36,38 @@ class View(BrowserView):
             data = ann[key]
             keywords = data['keywords']
             correspondence = data['correspondence']
-            email = data['correspondence_email']
+            #email = data['correspondence_email']
             additional = data['additional']
             return dict(
                     keywords = keywords,
                     correspondence = correspondence,
-                    email = email,
                     additional = additional)
         return dict(
-                keywords = "",
-                correspondence = "",
-                email = "",
-                additional = "")
-        
+                keywords = u"",
+                correspondence = u"",
+                additional = u"")
 
 
+    def authors(self):
+        """
+        returns dicts with fullname and affiliation
+        """
+        author_id_list = self.context.getAuthors()
+        authors = []
+        catalog = getToolByName(self.context, "portal_catalog")
+        for i in author_id_list:
+            brains = catalog(id=i)
+            for brain in brains:
+                obj = brain.getObject()
+                surname = brain.getSurname
+                firstname = obj.getFirstname()
+                name = "%s %s" %(firstname, surname)
+                affil = obj.getOrganisation()
+                author_id = obj.getId()
+                author = {'id' : author_id, 'name' : name, 'affil' : affil}
+                authors.append(author)
+        return authors
 
+   
 
     
