@@ -102,6 +102,7 @@ class View(BrowserView):
         #return unicode(soup)
         return soup
 
+
     def annotations(self):
         """
         get zbw.coverdata annotations
@@ -114,14 +115,17 @@ class View(BrowserView):
             keywords = data['keywords']
             correspondence = data['correspondence']
             additional = data['additional']
+            authors = data['authors']
             return dict(
                     keywords = keywords,
                     correspondence = correspondence,
-                    additional = additional)
+                    additional = additional,
+                    authors = authors)
         return dict(
                 keywords = "",
                 correspondence = "",
-                additional = "")
+                additional = "",
+                authors = authors)
 
 
     def citation_string(self):

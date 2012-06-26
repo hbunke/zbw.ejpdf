@@ -64,7 +64,9 @@ class View(BrowserView):
                 name = "%s %s" %(firstname, surname)
                 affil = obj.getOrganisation()
                 author_id = obj.getId()
-                author = {'id' : author_id, 'name' : name, 'affil' : affil}
+                email = obj.getEmail()
+                author = {'id' : author_id, 'name' : name, 'affil' : affil,
+                        'email' : email}
                 authors.append(author)
         return authors
 

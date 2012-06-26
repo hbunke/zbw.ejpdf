@@ -97,18 +97,60 @@ class CoverAnnotation(object):
         self.request = self.context.REQUEST
         ann = IAnnotations(self.context)
         KEY="zbw.coverdata"
-       
+        
+        # for debugging and testing: first delete previously stored annotations
+        del ann[KEY]
+
         if not ann.has_key(KEY):
             ann[KEY] = PersistentDict()
         self.ann = ann[KEY]
 
-        keys = ["keywords", "correspondence",
-                "additional"]
+                
+        
+        # a little complicated here, but we need to combine several field
+        # values from the control form, in order to get all necessary author
+        # information
+        #XXX could be done better, most probably ;-)
+        authors = zip(self.request['author_name'], self.request['affil'],
+                self.request['author_email'])
+        authors_new = []
+        for author in authors:
+            if author[0] == self.request['corresponding_author']:
+                author_new = dict(
+                        name = author[0],
+                        affil = author[1],
+                        corresponding = True,
+                        email = author[2]
+                        )
+            else:
+                author_new = dict(
+                        name = author[0],
+                        affil = author[1],
+                        corresponding = False,
+                        email = authors[2]
+                        )
+            authors_new.append(author_new)
+        
+       
+        self.ann['authors'] = authors_new
+        
+        keys = ["keywords", 
+                "correspondence",
+                "additional",
+                ]
+
         for key in keys:
             if key in self.request:
                 self.ann[key] = self.request[key]
             else:
                 self.ann[key] = u""
+
+
+
+
+
+
+
 
 
 class FOPError(Exception):

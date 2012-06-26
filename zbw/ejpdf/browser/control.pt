@@ -33,7 +33,9 @@
             <div class="fieldset" style="font-size:11px;">
                 
                 <div tal:repeat="author view/authors" style="background:rgb(244,244,244); padding:3px 3px 3px 12px;">
-                    <input type="radio" name="corresponding_author" tal:attributes="value author/id" 
+                    <input type="hidden" name="author_name" tal:attributes="value author/name" />
+                    <input type="hidden" name="author_email" tal:attributes="value author/email" />
+                    <input type="radio" name="corresponding_author" tal:attributes="value author/name" 
                         style="margin-left:-12px; margin-top:-2px; font-size:24pt;"/>
                     <strong><span tal:replace="author/name" /></strong>
                 
