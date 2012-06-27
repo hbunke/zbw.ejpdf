@@ -14,26 +14,10 @@
 
 
 <browser:page
-      name="cover_xml"
-      for="Products.eJournal.interfaces.marker.IPaper"
-      class=".cover.View"
-      allowed_interface=".cover.IView"
-      permission="zope2.Public" />
-
-
-  <browser:page
-      name="cover_xsl"
-      for="Products.eJournal.interfaces.marker.IPaper"
-      class=".cover.XslView"
-      permission="zope2.Public" 
-      />
-
-
-<browser:page
     name="cover_pdf"
     for="Products.eJournal.interfaces.marker.IPaper"
-    class=".cover.PdfView"
-     permission="cmf.ManagePortal" />
+    class=".pdf.View"
+    permission="cmf.ManagePortal" />
 
 <browser:page
     name="cover_control"
@@ -45,7 +29,6 @@
     name="cover_fo"
     for="Products.eJournal.interfaces.marker.IPaper"
     class=".fo.View"
-    allowed_interface=".fo.IView"
     permission="zope2.Public" />
 
 </configure>

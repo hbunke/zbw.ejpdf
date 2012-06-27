@@ -32,21 +32,10 @@ class Cover(object):
             fop  = 'fop'
         fop_conf = settings.fop_conf
         
-        xml_view = getMultiAdapter((self.context, self.context.REQUEST),
-                name="cover_xml")
-        xsl_view = getMultiAdapter((self.context, self.context.REQUEST),
-                name="cover_xsl")
         fo_view = getMultiAdapter((self.context, self.context.REQUEST),
                 name="cover_fo")
-        xml = xml_view()
-        xsl = xsl_view()
         fo = fo_view()
-        xmltemp = tempfile.mktemp(suffix='.xml')
-        xsltemp = tempfile.mktemp(suffix='.xsl')
         fotemp = tempfile.mktemp(suffix='.fo')
-        
-        self.__tmpwrite(xmltemp, xml)
-        self.__tmpwrite(xsltemp, xsl)
         self.__tmpwrite(fotemp, fo)
         
         pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
@@ -71,8 +60,6 @@ class Cover(object):
             raise FOPError(fop_msg)
 
         request = self.context.REQUEST
-        os.unlink(xmltemp)
-        os.unlink(xsltemp)
         os.unlink(fotemp)
 
 

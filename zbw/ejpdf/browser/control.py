@@ -35,7 +35,6 @@ class View(BrowserView):
             #make sure that all necessary keys are in annotations; some
             #annotations are from an earlier dev stage
             keys = ['keywords', 'correspondence', 'additional', 'authors']
-
             for k in keys:
                 if k in data:
                     d[k] = data[k]
@@ -46,7 +45,8 @@ class View(BrowserView):
         return dict(
                 keywords = u"",
                 correspondence = u"",
-                additional = u"")
+                additional = u"",
+                authors = False)
 
 
     def authors(self):
@@ -94,6 +94,7 @@ class View(BrowserView):
         for author in ann['authors']:
             if author['corresponding'] is True:
                 return author['name']
+            
     
 
 

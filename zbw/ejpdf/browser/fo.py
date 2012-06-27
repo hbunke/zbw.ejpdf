@@ -18,15 +18,6 @@ from plone.registry.interfaces import IRegistry
 from zbw.ejpdf.interfaces import ICoverSettings
 
 
-class IView(Interface):
-
-    def publish_date():
-        """
-        """
-
-    def get_publish_year():
-        """
-        """
 
 
 class View(BrowserView):
