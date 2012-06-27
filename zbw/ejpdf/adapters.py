@@ -99,41 +99,42 @@ class CoverAnnotation(object):
         KEY="zbw.coverdata"
         
         # for debugging and testing: first delete previously stored annotations
-        del ann[KEY]
+        #del ann[KEY]
 
         if not ann.has_key(KEY):
             ann[KEY] = PersistentDict()
         self.ann = ann[KEY]
 
-                
-        
         # a little complicated here, but we need to combine several field
         # values from the control form, in order to get all necessary author
         # information
         #XXX could be done better, most probably ;-)
+
+        request_author_keys = ['author_name', 'affil', 'author_email']
+        for key in request_author_keys:
+            if type(self.request[key]) is not list:
+                    self.request[key] = [self.request[key]]
+            
         authors = zip(self.request['author_name'], self.request['affil'],
                 self.request['author_email'])
         authors_new = []
         for author in authors:
-            if author[0] == self.request['corresponding_author']:
-                author_new = dict(
-                        name = author[0],
-                        affil = author[1],
-                        corresponding = True,
-                        email = author[2]
-                        )
-            else:
-                author_new = dict(
-                        name = author[0],
-                        affil = author[1],
-                        corresponding = False,
-                        email = authors[2]
-                        )
+            author_new = dict(
+                            name = author[0],
+                            affil = author[1],
+                            email = author[2],
+                            corresponding = False
+                            )
+
+            # erstes if kann spaeter weg, wenn corresponding standardmaessig übermittelt
+            # wird
+            if 'corresponding_author' in self.request:
+                if author[0] == self.request['corresponding_author']:
+                    author_new['corresponding'] = True
+            
             authors_new.append(author_new)
-        
        
         self.ann['authors'] = authors_new
-        
         keys = ["keywords", 
                 "correspondence",
                 "additional",
@@ -144,10 +145,6 @@ class CoverAnnotation(object):
                 self.ann[key] = self.request[key]
             else:
                 self.ann[key] = u""
-
-
-
-
 
 
 

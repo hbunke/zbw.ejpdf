@@ -51,7 +51,8 @@
             <fo:flow flow-name="xsl-region-body"
                 tal:define="navroot context/@@plone_portal_state/navigation_root_url;
                             logo    string:${navroot}/++resource++zbw.ejpdf/logo3.tif;
-                            url string:{context/absolute_url}">
+                            url string:{context/absolute_url};
+                            mail_icon string:${navroot}/++resource++zbw.ejpdf/mail.svg;">
 						
                 <!-- Logo --> 
                     <fo:block-container absolute-position="fixed" top="0.75cm" 
@@ -112,6 +113,7 @@
                     </fo:block-container>
 
                     
+                    <!-- Titel -->
                     <fo:block
                         font-size="17pt"
                         font-weight="bold"
@@ -119,30 +121,28 @@
                         space-before="1.5cm"
                         tal:content="context/Title" />
                     
-                    
-                    <fo:block-container
-                        font-style="italic"
-                        space-before="0.5cm"
-                        text-align="left">
-                        <fo:block font-size="14pt">
-                        <tal:authors tal:repeat="author view/authors"><fo:inline 
+
+                    <!-- Authors -->
+                        <fo:block 
+                            font-size="14pt" 
+                            font-style="italic"
+                            space-before="0.5cm"
+                            text-align="left">
+                            <tal:authors tal:repeat="author view/authors"><fo:inline 
                                  keep-together.within-line="always"><tal:author
                                  tal:replace="author/name" /><tal:bla
                                      tal:condition="python:view.is_last_author(author)"
                                      tal:replace="string:,"/></fo:inline>
-                        </tal:authors>
+                            </tal:authors>
                         </fo:block>
-                    </fo:block-container>
 
                     
                     <!-- abstract -->
                     <fo:block font-weight="bold"
                     space-before="18px">Abstract </fo:block>
-                    <tal:abstract tal:define="abstract view/clean_abstract"
-                        tal:repeat="para abstract">
-                        <fo:block text-align="justify" space-before="12px"
-                        language="en" hyphenate="false" tal:content="structure para" />
-                    </tal:abstract>
+                    
+                <tal:abstract tal:define="abstract view/clean_abstract"
+                    tal:content="structure abstract" />
     
                     <!-- special issue -->
                     <tal:si tal:condition="python:context.portal_type == 'JournalPaper'">
@@ -152,7 +152,7 @@
                             Published in Special Issue
                                 <fo:inline font-style="italic" tal:content="si" />
                             </fo:block>
-                    </tal:si>a
+                    </tal:si>
                         
                     <fo:block-container font-size="10px" space-before="6px">
 
@@ -176,10 +176,13 @@
                         </fo:inline>
                         <tal:authors tal:repeat="author ann/authors">
                             <fo:block>
+                               
+
                                 <fo:inline tal:content="author/name" />,
                                 <fo:inline tal:condition="not:author/corresponding" tal:content="author/affil" />
-                                
                                 <tal:correspondence tal:condition="author/corresponding">
+                                     <fo:external-graphic content-height="50%" content-width="50%"
+                                    tal:attributes="src mail_icon" padding-bottom='-2px' />
                                     <fo:inline tal:content="ann/correspondence" />,
                                     <fo:inline tal:content="author/email" />
                                 </tal:correspondence>
@@ -187,22 +190,20 @@
                             </fo:block>
                         </tal:authors>
                     </fo:block>
-                        
-                    
 
                 </fo:block-container>
 
-                <fo:block-container space-before="12px" font-size="8pt"
+                <fo:block-container space-before="6px" font-size="8pt"
                 tal:define="ann view/annotations">
-                    
-                    <fo:block>
+                    <fo:block font-style="italic"
+                    tal:content="ann/additional" />
+
+                    <fo:block  space-before='6px'>
                     <fo:inline font-weight="bold" padding-right="6px">Citation </fo:inline>
                         <tal:citation tal:replace="view/citation_string" />
                     </fo:block>
                     
-                    <fo:block space-before="6px" font-style="italic"
-                    tal:content="ann/additional" />
-                        
+                                            
                 
                 </fo:block-container>
 

@@ -9,7 +9,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
 from Products.ATContentTypes.utils import DT2dt
 #from datetime import date
-from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup, Tag
 from zbw.ejpdf.interfaces import ICover, ICoverAnnotation
 from zope.interface import Interface
 from zope.annotation.interfaces import IAnnotations
@@ -97,10 +97,31 @@ class View(BrowserView):
         """
         """
         html = self.context.getAbstract()
-        soup = BeautifulSoup(html, convertEntities=BeautifulSoup.HTML_ENTITIES)
-        soup = soup.findAll('p')
-        #return unicode(soup)
-        return soup
+        
+        #tags we don't need BeautifulSoup for. KISS!
+        abstract = html.replace('<br />', '')
+        
+        soup = BeautifulSoup(abstract, convertEntities=BeautifulSoup.HTML_ENTITIES)
+        
+        #replacing html <p> with fo <fo:block>
+        while True:
+            p = soup.find('p')
+            if not p:
+                break
+            p.name = 'fo:block'
+            del p['style']
+            p['text-align'] = 'justify'
+            p['space-after'] = '6px'
+            p['language'] = 'en'
+            p['hyphenate'] = 'false'
+                
+        # removing <a> tags without tag content
+        links = soup.findAll('a')
+        for l in links:
+            l.replaceWithChildren()
+
+        return unicode(soup)
+        #return soup
 
 
     def annotations(self):
@@ -109,23 +130,7 @@ class View(BrowserView):
         """
 
         ann = IAnnotations(self.context)
-        key = 'zbw.coverdata'
-        if key in ann:
-            data = ann[key]
-            keywords = data['keywords']
-            correspondence = data['correspondence']
-            additional = data['additional']
-            authors = data['authors']
-            return dict(
-                    keywords = keywords,
-                    correspondence = correspondence,
-                    additional = additional,
-                    authors = authors)
-        return dict(
-                keywords = "",
-                correspondence = "",
-                additional = "",
-                authors = authors)
+        return ann['zbw.coverdata']
 
 
     def citation_string(self):
@@ -167,4 +172,27 @@ class View(BrowserView):
             return True
         return False
 
+    def get_volume(self):
+        """
+        returns Volume number of Journalarticle according to creation date
+        """
+        cyear = int(self.context.created().strftime('%Y'))
+        startyear = 2007
+        vol = cyear - startyear +1
+        return vol
+
+     
+    def special_issue(self):
+        """
+        checks if paper has been published in Special Issue
+        """
+        obj = self.context
+        paper_view = getMultiAdapter((self.context, self.request),
+                name="paperView")
+        si = paper_view.getSpecialIssues()
+        if si:
+            obj = si[0].getObject()
+            title = obj.Title()
+            return title
+        return False
 

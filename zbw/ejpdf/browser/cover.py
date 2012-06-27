@@ -181,10 +181,8 @@ class PdfView(BrowserView):
         registry = getUtility(IRegistry)
         settings = registry.forInterface(ICoverSettings)
         
-        
         #first store additional data from request
         store = ICoverAnnotation(self.context)
-        
 
         pdf = ICover(self.context)
         pdf = pdf.generate()
