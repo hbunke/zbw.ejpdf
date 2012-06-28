@@ -17,12 +17,8 @@ class Cover(object):
     """
     
     def __init__(self, context):
+        
         self.context = context
-
-    def generate(self):
-        """
-        """
-
         registry = getUtility(IRegistry)
         settings = registry.forInterface(ICoverSettings)
 
@@ -35,15 +31,15 @@ class Cover(object):
         fo_view = getMultiAdapter((self.context, self.context.REQUEST),
                 name="cover_fo")
         fo = fo_view()
-        fotemp = tempfile.mktemp(suffix='.fo')
-        self.__tmpwrite(fotemp, fo)
         
+        fotemp = tempfile.mktemp(suffix='.fo')
+        f = open(fotemp, 'w')
+        c = fo.encode('utf-8')
+        f.write(c)
+        f.close()
+
         pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
                 self.context.getId())
-
-        #fop_cmd = "%s -c '%s' -xml '%s' -xsl '%s' '%s/%s'" %(fop, fop_conf,
-        #            xmltemp, xsltemp, settings.pdf_dir, pdfname)
-
 
         fop_cmd = "%s -c '%s' %s '%s/%s'" %(fop, fop_conf, fotemp,
                     settings.pdf_dir, pdfname)
@@ -62,15 +58,6 @@ class Cover(object):
         request = self.context.REQUEST
         os.unlink(fotemp)
 
-
-    def __tmpwrite(self, dat, content):
-        """
-        writes content to file
-        """
-        f = open(dat, 'w')
-        c = content.encode('utf-8')
-        f.write(c)
-        f.close()
 
 
 class CoverAnnotation(object):
@@ -132,8 +119,6 @@ class CoverAnnotation(object):
                 self.ann[key] = self.request[key]
             else:
                 self.ann[key] = u""
-
-
 
 
 

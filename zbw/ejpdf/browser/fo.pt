@@ -43,7 +43,7 @@
                
             <fo:static-content flow-name="xsl-region-after"
                 font-size="7pt" font-family="Helvetica">
-                <fo:block>
+                 <fo:block>
                     © Author(s) <fo:inline tal:replace="view/get_publish_year" />. Licensed under a Creative Commons License
                     - Attribution-NonCommercial 2.0 Germany
                 </fo:block>
@@ -181,8 +181,8 @@
                                 <fo:inline tal:content="author/name" />,
                                 <fo:inline tal:condition="not:author/corresponding" tal:content="author/affil" />
                                 <tal:correspondence tal:condition="author/corresponding">
-                                     <fo:external-graphic content-height="50%" content-width="50%"
-                                    tal:attributes="src mail_icon" padding-bottom='-2px' />
+                                     <fo:external-graphic 
+                                    tal:attributes="src mail_icon" content-width="50%" content-height="50%" />
                                     <fo:inline tal:content="ann/correspondence" />,
                                     <fo:inline tal:content="author/email" />
                                 </tal:correspondence>

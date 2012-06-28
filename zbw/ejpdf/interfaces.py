@@ -9,13 +9,9 @@ class ICover(Interface):
     Interface for generating Economics PDF-Cover
     """
 
-    def generate():
-        """
-        """
-
 class ICoverAnnotation(Interface):
     """
-    Interface for storing form data from cover_control as Annotation on object
+    Interface for storing form data from cover_control as annotation on object
     """
 
 class ICoverSettings(Interface):

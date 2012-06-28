@@ -8,16 +8,9 @@ from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
 from Products.ATContentTypes.utils import DT2dt
-#from datetime import date
-from BeautifulSoup import BeautifulSoup, Tag
-from zbw.ejpdf.interfaces import ICover, ICoverAnnotation
-from zope.interface import Interface
+from BeautifulSoup import BeautifulSoup
 from zope.annotation.interfaces import IAnnotations
-from zope.component import getMultiAdapter, getUtility
-from plone.registry.interfaces import IRegistry
-from zbw.ejpdf.interfaces import ICoverSettings
-
-
+from zope.component import getMultiAdapter
 
 
 class View(BrowserView):
@@ -105,7 +98,26 @@ class View(BrowserView):
             p['space-after'] = '6px'
             p['language'] = 'en'
             p['hyphenate'] = 'false'
-                
+        
+        #replacing sub 
+        while True:
+            sub = soup.find('sub')
+            if not sub:
+                break
+            sub.name = 'fo:inline'
+            sub['baseline-shift'] = 'sub'
+            sub['font-size'] = '80%'
+
+        #replacing sup
+        while True:
+            sup = soup.find('sup')
+            if not sup:
+                break
+            sup.name = 'fo:inline'
+            sup['baseline-shift'] = 'sup'
+            sup['font-size'] = '80%'
+        
+
         # removing <a> tags without tag content
         links = soup.findAll('a')
         for l in links:
