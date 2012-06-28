@@ -61,8 +61,8 @@
 
             <div class="field">
                 <label>Correspondence</label>
-                <div class="formHelp">Name, affiliation and address of contact
-                    person, but NOT email-address</div>
+                <div class="formHelp">Address of contact
+                    person, but NOT email-address, name and affiliation</div>
                 <textarea name="correspondence" rows="5" cols="40"><span
                         tal:replace="ann/correspondence" /></textarea>
             </div>
