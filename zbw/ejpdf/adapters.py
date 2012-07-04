@@ -23,7 +23,7 @@ class Cover(object):
         settings = registry.forInterface(ICoverSettings)
 
         if settings.fop_cmd:
-            fop = settings.fop
+            fop = settings.fop_cmd
         else:
             fop  = 'fop'
         fop_conf = settings.fop_conf
