@@ -32,6 +32,7 @@ class Cover(object):
                 name="cover_fo")
         fo = fo_view()
         
+        
         fotemp = tempfile.mktemp(suffix='.fo')
         f = open(fotemp, 'w')
         c = fo.encode('utf-8')
@@ -46,18 +47,30 @@ class Cover(object):
         
         stdin = open('/dev/null')
         stdout = stderr = PIPE
-
+        
         p_fop = Popen(fop_cmd, stderr=stderr, stdout=stdout, stdin=stdin,
             shell=True)
-        status_fop = p_fop.wait()
+
         
-        if status_fop != 0:
-            fop_msg = p_fop.stderr.read()
+        #XXX wait() might causes deadlocks in case of large outputs
+        #status_fop = p_fop.wait(). This might have been the cause for the
+        #errors on freebsd
+        #better use communicate(). See
+        #http://docs.python.org/library/subprocess.html#subprocess.Popen.wait
+        
+        p_fop_out = p_fop.communicate()
+        p_fop_status = p_fop.returncode
+
+        if p_fop_status !=0:
+            fop_msg = p_fop_out[1]
             raise FOPError(fop_msg)
+
+        #if status_fop != 0:
+        #    fop_msg = p_fop.stderr.read()
+        #    raise FOPError(fop_msg, status_fop)
 
         request = self.context.REQUEST
         os.unlink(fotemp)
-
 
 
 class CoverAnnotation(object):
@@ -124,22 +137,6 @@ class CoverAnnotation(object):
 
 class FOPError(Exception):
     pass
-
    
-
-
-
-
-
-
-
-
-
-        
-
-        
-
-
-    
 
 
