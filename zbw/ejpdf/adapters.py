@@ -45,6 +45,7 @@ class Cover(object):
         fop_cmd = "%s -c '%s' %s '%s/%s'" %(fop, fop_conf, fotemp,
                     settings.pdf_dir, pdfname)
         
+
         stdin = open('/dev/null')
         stdout = stderr = PIPE
         
@@ -136,7 +137,15 @@ class CoverAnnotation(object):
 
 
 class FOPError(Exception):
-    pass
+    
+    def __init__(self, reason, errorcode):
+        self.reason = str(reason)
+        self.errorcode = errorcode
+    
+    def __str__(self):
+        s = "(%s)  " %self.errorcode
+        s += self.reason
+        return s
    
 
 
