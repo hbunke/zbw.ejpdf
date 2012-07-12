@@ -63,7 +63,7 @@ class Cover(object):
 
         if p_fop_status !=0:
             fop_msg = p_fop_out[1]
-            raise FOPError(fop_msg)
+            raise FOPError(fop_msg, p_fop_status)
 
         #if status_fop != 0:
         #    fop_msg = p_fop.stderr.read()
