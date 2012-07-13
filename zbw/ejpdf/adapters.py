@@ -41,16 +41,18 @@ class Cover(object):
 
         pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
                 self.context.getId())
-
-        fop_cmd = "%s -c '%s' %s '%s/%s'" %(fop, fop_conf, fotemp,
-                    settings.pdf_dir, pdfname)
+        pdf = settings.pdf_dir + '/' + pdfname
         
+        #fop_cmd = "%s -c '%s' %s '%s/%s'" %(fop, fop_conf, fotemp,
+        #            settings.pdf_dir, pdfname)
+
+        fop_list = [fop, '-c', fop_conf, fotemp, pdf] 
 
         stdin = open('/dev/null')
         stdout = stderr = PIPE
         
-        p_fop = Popen(fop_cmd, stderr=stderr, stdout=stdout, stdin=stdin,
-            shell=True)
+        p_fop = Popen(fop_list, stderr=stderr, stdout=stdout, stdin=stdin,
+           shell=True)
 
         
         #XXX wait() might causes deadlocks in case of large outputs
