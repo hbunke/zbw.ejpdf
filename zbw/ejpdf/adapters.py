@@ -52,9 +52,8 @@ class Cover(object):
         stdout = stderr = PIPE
         
         p_fop = Popen(fop_list, stderr=stderr, stdout=stdout, stdin=stdin,
-           shell=True)
+          )
 
-        
         #XXX wait() might causes deadlocks in case of large outputs
         #status_fop = p_fop.wait(). This might have been the cause for the
         #errors on freebsd
