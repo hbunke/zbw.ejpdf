@@ -43,20 +43,23 @@ class Cover(object):
                 self.context.getId())
         pdf = settings.pdf_dir + '/' + pdfname
         
-        #fop_cmd = "%s -c '%s' %s '%s/%s'" %(fop, fop_conf, fotemp,
+        #fop_cmd = "%s '-c' '%s' '%s' '%s/%s'" %(fop, fop_conf, fotemp,
         #            settings.pdf_dir, pdfname)
 
         fop_list = [fop, '-c', fop_conf, fotemp, pdf] 
 
         stdin = open('/dev/null')
         stdout = stderr = PIPE
-        
-        p_fop = Popen(fop_list, stderr=stderr, stdout=stdout, stdin=stdin,
-          )
+        env = {'PATH':'/bin:/usr/bin:/usr/local/bin'}
+
+        p_fop = Popen(fop_list, 
+                stderr=stderr, 
+                stdout=stdout, 
+                stdin=stdin,
+                env=env)
 
         #XXX wait() might causes deadlocks in case of large outputs
-        #status_fop = p_fop.wait(). This might have been the cause for the
-        #errors on freebsd
+        #status_fop = p_fop.wait().
         #better use communicate(). See
         #http://docs.python.org/library/subprocess.html#subprocess.Popen.wait
         
