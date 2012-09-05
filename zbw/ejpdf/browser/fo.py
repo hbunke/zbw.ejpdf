@@ -71,7 +71,7 @@ class View(BrowserView):
                 name = "%s %s" %(firstname, surname)
                 affil = obj.getOrganisation()
                 author_id = obj.getId()
-                author = {'id' : author_id, 'name' : name, 'affil' : affil}
+                author = {'author_id' : author_id, 'name' : name, 'affil' : affil}
                 authors.append(author)
 
         return authors
@@ -173,7 +173,7 @@ class View(BrowserView):
         """
         """
         authors = self.authors()
-        if not author == authors[-1]:
+        if not author == authors[-1]['author_id']:
             return True
         return False
 
@@ -198,6 +198,7 @@ class View(BrowserView):
         if si:
             obj = si[0].getObject()
             title = obj.Title()
-            return title
+            url = obj.absolute_url()
+            return {'title' : title, 'url' : url}
         return False
 

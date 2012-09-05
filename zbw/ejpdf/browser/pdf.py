@@ -31,6 +31,7 @@ class View(BrowserView):
                 self.context.getId())
         self.context.REQUEST.RESPONSE.setHeader('Content-Type', 'application/pdf')
         pdf = "%s/%s" %(settings.pdf_url, pdfname)
+        #import pdb; pdb.set_trace()
         self.context.REQUEST.RESPONSE.redirect(pdf)
            
 

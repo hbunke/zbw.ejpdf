@@ -80,7 +80,8 @@ class Cover(object):
 
 class CoverAnnotation(object):
     """
-    store form values as annotation on object
+    store form values as annotation on object. Called before PDF generation
+    (browser/pdf.py)
     """
 
     def __init__(self, context):
@@ -102,33 +103,33 @@ class CoverAnnotation(object):
         # information
         #XXX could be done better, most probably ;-)
 
-        request_author_keys = ['author_name', 'affil', 'author_email']
+        request_author_keys = ['author_name', 'affil', 'author_email',
+                                'author_id']
+        
         for key in request_author_keys:
             if type(self.request[key]) is not list:
                     self.request[key] = [self.request[key]]
             
         authors = zip(self.request['author_name'], self.request['affil'],
-                self.request['author_email'])
+                self.request['author_email'], self.request['author_id'])
         authors_new = []
         for author in authors:
             author_new = dict(
                             name = author[0],
                             affil = author[1],
                             email = author[2],
+                            author_id = author[3],
                             corresponding = False
                             )
 
-            # erstes if kann spaeter weg, wenn corresponding standardmaessig übermittelt
-            # wird
-            if 'corresponding_author' in self.request:
-                if author[0] == self.request['corresponding_author']:
-                    author_new['corresponding'] = True
+            if author[3] == self.request['corresponding_author']:
+                author_new['corresponding'] = True
             
             authors_new.append(author_new)
        
+        #writing the annotations
         self.ann['authors'] = authors_new
         keys = ["keywords", 
-                "correspondence",
                 "additional",
                 ]
 
@@ -137,6 +138,7 @@ class CoverAnnotation(object):
                 self.ann[key] = self.request[key]
             else:
                 self.ann[key] = u""
+
 
 
 

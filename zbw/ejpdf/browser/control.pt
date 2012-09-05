@@ -19,14 +19,7 @@
 
             <tal:block tal:define="ann view/annotations">
 
-            <div class="field">
-                <label>Keywords</label>
-                <div class="formHelp">Type keywords as they should appear on
-                    cover page</div>
-                <input type="text" name="keywords" size="80" 
-                tal:attributes="value ann/keywords" />    
-            </div>
-
+            
             <label>Authors</label>
             <div class="formHelp">Change author information here. Please also check the author under who's name
             the correspondence address will appear. Default is first author</div>
@@ -36,20 +29,21 @@
                     >
                     <input type="hidden" name="author_name" tal:attributes="value author/name" />
                     <input type="hidden" name="author_email" tal:attributes="value author/email" />
+                    <input type="hidden" name="author_id" tal:attributes="value author/author_id" />
 
                     <input tal:condition="author/corresponding"
-                        type="radio" name="corresponding_author" tal:attributes="value author/name" 
+                        type="radio" name="corresponding_author" tal:attributes="value author/author_id" 
                         style="margin-left:-12px; margin-top:-2px; font-size:24pt;" checked="checked" />
 
                     <input tal:condition="not:author/corresponding"
-                        type="radio" name="corresponding_author" tal:attributes="value author/name" 
+                        type="radio" name="corresponding_author" tal:attributes="value author/author_id" 
                         style="margin-left:-12px; margin-top:-2px; font-size:24pt;" />
                     
                     <strong><span tal:replace="author/name" /></strong>
                 
                 <div class="field" style="margin-left:6px">
                     <label></label>
-                    <input type="text" name="affil" size="80"
+                    <input type="text" name="affil" size="100"
                         tal:attributes="value author/affil" />
                 </div>
                 
@@ -58,7 +52,16 @@
                     
             </div>
 
+        <div class="field">
+                <label>Keywords</label>
+                <div class="formHelp">Type keywords as they should appear on
+                    cover page</div>
+                <input type="text" name="keywords" size="80" 
+                tal:attributes="value ann/keywords" />    
+            </div>
 
+
+        <!--
             <div class="field">
                 <label>Correspondence</label>
                 <div class="formHelp">Address of contact
@@ -66,7 +69,9 @@
                 <textarea name="correspondence" rows="5" cols="40"><span
                         tal:replace="ann/correspondence" /></textarea>
             </div>
-            
+        -->
+
+
             <!--
             <div class="field">
                 <label>Correspondence Email</label>

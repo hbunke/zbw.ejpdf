@@ -34,7 +34,7 @@ class View(BrowserView):
             
             #make sure that all necessary keys are in annotations; some
             #annotations are from an earlier dev stage
-            keys = ['keywords', 'correspondence', 'additional', 'authors']
+            keys = ['keywords', 'additional', 'authors']
             for k in keys:
                 if k in data:
                     d[k] = data[k]
@@ -44,7 +44,6 @@ class View(BrowserView):
         
         return dict(
                 keywords = u"",
-                correspondence = u"",
                 additional = u"",
                 authors = False)
 
@@ -54,6 +53,9 @@ class View(BrowserView):
         returns dicts with fullname, affiliation, email and marks
         corresponding author
         """
+        ann = IAnnotations(self.context)
+        key = 'zbw.coverdata'
+        
         author_id_list = self.context.getAuthors()
         authors = []
         catalog = getToolByName(self.context, "portal_catalog")
@@ -64,10 +66,18 @@ class View(BrowserView):
                 surname = brain.getSurname
                 firstname = obj.getFirstname()
                 name = "%s %s" %(firstname, surname)
-                affil = obj.getOrganisation()
+               
+                try:
+                    dic = ann[key]['authors']
+                    for d in dic:
+                        if i == d['author_id']:
+                            affil = d['affil']
+                except:
+                    affil = obj.getOrganisation()
+                
                 author_id = obj.getId()
                 email = obj.getEmail()
-                author = {'id' : author_id, 'name' : name, 'affil' : affil,
+                author = {'author_id' : author_id, 'name' : name, 'affil' : affil,
                         'email' : email, 'corresponding' : False}
                 authors.append(author)
         

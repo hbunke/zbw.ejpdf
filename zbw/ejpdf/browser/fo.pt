@@ -127,11 +127,14 @@
                             font-size="14pt" 
                             font-style="italic"
                             space-before="0.5cm"
-                            text-align="left">
-                            <tal:authors tal:repeat="author view/authors"><fo:inline 
+                            text-align="left"
+                            tal:define="ann view/annotations"
+                            >
+
+                            <tal:authors tal:repeat="author ann/authors"><fo:inline 
                                  keep-together.within-line="always"><tal:author
                                  tal:replace="author/name" /><tal:bla
-                                     tal:condition="python:view.is_last_author(author)"
+                                     tal:condition="python:view.is_last_author(author['author_id'])"
                                      tal:replace="string:,"/></fo:inline>
                             </tal:authors>
                         </fo:block>
@@ -150,7 +153,11 @@
                             tal:define="si view/special_issue"
                             tal:condition="si">
                             Published in Special Issue
-                                <fo:inline font-style="italic" tal:content="si" />
+                            <fo:inline color="darkblue">
+                                <fo:basic-link
+                                        tal:attributes="external-destination si/url"
+                                        tal:content="si/title"/>
+                                </fo:inline>
                             </fo:block>
                     </tal:si>
                         
@@ -175,15 +182,15 @@
                             Authors
                         </fo:inline>
                         <tal:authors tal:repeat="author ann/authors">
-                            <fo:block>
+                            <fo:block margin-left="0.5cm" text-indent="-0.5cm">
                                
 
-                                <fo:inline tal:content="author/name" />,
+                                <fo:inline tal:content="author/name" font-style="italic" />,
                                 <fo:inline tal:condition="not:author/corresponding" tal:content="author/affil" />
                                 <tal:correspondence tal:condition="author/corresponding">
                                      <fo:external-graphic 
                                     tal:attributes="src mail_icon" content-width="50%" content-height="50%" />
-                                    <fo:inline tal:content="ann/correspondence" />,
+                                    <fo:inline tal:content="author/affil" />,
                                     <fo:inline tal:content="author/email" />
                                 </tal:correspondence>
 
