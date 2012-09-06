@@ -56,7 +56,7 @@
                 <label>Keywords</label>
                 <div class="formHelp">Type keywords as they should appear on
                     cover page</div>
-                <input type="text" name="keywords" size="80" 
+                <input type="text" name="keywords" size="100" 
                 tal:attributes="value ann/keywords" />    
             </div>
 

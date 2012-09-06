@@ -53,6 +53,17 @@ class View(BrowserView):
         if pt == "JournalPaper":
             uri = "http://dx.doi.org/10.5018/economics-ejournal.ja.%s" %self.context.getId()
         return uri
+    
+    
+    def authors_string(self):
+        """
+        """
+        
+        paper_view = getMultiAdapter((self.context, self.request),
+                name="paperView")
+        
+        return unicode(paper_view.authors_as_string(), 'utf-8')
+
 
 
     def authors(self):

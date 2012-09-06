@@ -109,9 +109,24 @@
                                         tal:content="view/uri"/>
                                 </fo:inline>
                         
+                            </fo:block>
+
+                        </fo:block-container>
+
+                        <fo:block-container font-family="Helvetica" font-size="8pt"
+                                tal:define="show_ja context/@@paperView/showRelatedJournalPaper"
+                                tal:condition="python:context.portal_type =='DiscussionPaper' and show_ja">
+                        <fo:block space-before="18px" color="rgb(64,64,64)">
+                            Please cite the corresponding Journal Article at
                         </fo:block>
+                        <fo:block>
+                            <fo:basic-link color="darkblue"
+                                tal:define="jp python:context.getBRefs('journalpaper_discussionpaper')[0]"
+                                tal:attributes="external-destination jp/absolute_url" tal:content="jp/absolute_url" />
+                        </fo:block>                      
                     </fo:block-container>
 
+                   
                     
                     <!-- Titel -->
                     <fo:block
@@ -131,14 +146,21 @@
                             tal:define="ann view/annotations"
                             >
 
+                            <!--
                             <tal:authors tal:repeat="author ann/authors"><fo:inline 
                                  keep-together.within-line="always"><tal:author
                                  tal:replace="author/name" /><tal:bla
                                      tal:condition="python:view.is_last_author(author['author_id'])"
                                      tal:replace="string:,"/></fo:inline>
                             </tal:authors>
-                        </fo:block>
+                            -->
+                            <!-- XXX auch nicht so dolle -->
+                            <fo:inline 
+                                keep-together.within-line="" tal:content="view/authors_string" />
 
+                        </fo:block>
+                    
+                        
                     
                     <!-- abstract -->
                     <fo:block font-weight="bold"
@@ -182,8 +204,10 @@
                             Authors
                         </fo:inline>
                         <tal:authors tal:repeat="author ann/authors">
-                            <fo:block margin-left="0.5cm" text-indent="-0.5cm">
-                               
+                            <fo:block>
+                            <!-- looks silly! 
+                                 <fo:block margin-left="0.5cm" text-indent="-0.5cm">
+                               -->
 
                                 <fo:inline tal:content="author/name" font-style="italic" />,
                                 <fo:inline tal:condition="not:author/corresponding" tal:content="author/affil" />
