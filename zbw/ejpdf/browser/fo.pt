@@ -77,7 +77,7 @@
                     </fo:block-container>
                 
                     <!-- infozeile -->
-                    <fo:block-container space-before="0px"
+                    <fo:block-container space-before="0px" margin-right="-20px"
                         font-family="Helvetica"
                         font-size="8pt">
 
@@ -133,7 +133,7 @@
                         font-size="17pt"
                         font-weight="bold"
                         text-align="left"
-                        space-before="1.5cm"
+                        space-before="1.25cm"
                         tal:content="context/Title" />
                     
 
@@ -231,7 +231,7 @@
 
                     <fo:block  space-before='6px'>
                     <fo:inline font-weight="bold" padding-right="6px">Citation </fo:inline>
-                        <tal:citation tal:replace="view/citation_string" />
+                        <tal:citation tal:replace="structure view/citation_string" />
                     </fo:block>
                     
                                             

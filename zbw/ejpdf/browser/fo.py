@@ -166,7 +166,7 @@ class View(BrowserView):
             doi_url = "http://dx.doi.org/%s" %type_view.get_doi()
             text += " (%s). " %type_view.pubyear()
             text += unicode(self.context.Title(), 'utf-8')
-            text += ".  Economics: The Open-Access, Open-Assessment E-Journal, "
+            text += ".  <fo:inline font-style='italic'>Economics: The Open-Access, Open-Assessment E-Journal</fo:inline>, "
             text += "Vol. %s, %s" %(type_view.get_volume(), self.context.getId())
             if version and version['number'] > 1:
                text += "(Version %s)" %version['number']
@@ -177,8 +177,10 @@ class View(BrowserView):
             url = self.context.absolute_url()
             text += unicode(type_view.cite_as(), 'utf-8')
             text += " %s" %url
-
+        
         return text
+
+
 
     def is_last_author(self, author):
         """
