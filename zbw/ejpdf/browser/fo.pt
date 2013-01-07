@@ -44,8 +44,8 @@
             <fo:static-content flow-name="xsl-region-after"
                 font-size="7pt" font-family="Helvetica">
                  <fo:block>
-                    © Author(s) <fo:inline tal:replace="view/get_publish_year" />. Licensed under a Creative Commons License
-                    - Attribution-NonCommercial 2.0 Germany
+                    © Author(s) <fo:inline tal:replace="view/get_publish_year" />. Licensed under the Creative Commons License
+                    - Attribution 3.0
                 </fo:block>
             </fo:static-content>
             <fo:flow flow-name="xsl-region-body"
