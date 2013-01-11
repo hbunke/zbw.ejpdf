@@ -25,7 +25,6 @@ class View(BrowserView):
         
         #first store additional data from request
         store = ICoverAnnotation(self.context)
-
         pdf = ICover(self.context)
         pdfname = "cover.%s.%s.pdf" %(self.context.portal_type,
                 self.context.getId())

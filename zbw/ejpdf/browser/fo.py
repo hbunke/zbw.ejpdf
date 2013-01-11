@@ -16,19 +16,31 @@ from zope.component import getMultiAdapter
 class View(BrowserView):
 
     template = ViewPageTemplateFile("fo.pt")
+    
+
 
     def __call__(self):
         self.request.RESPONSE.setHeader('Content-Type', 'text/xml')
         return self.template()
+
+    def __get_obj_date(self):
+        """
+        necessary because unpublished paper do not have created(). In that case
+        modified() is returned
+        """
+
+        date = self.context.created()
+        if date is None:
+            date = self.context.modified()
+        return date
 
 
     def publish_date(self):
         """
         returns date in format Month dayNumber, Year
         """
-        obj = self.context
         #import pdb; pdb.set_trace()
-        obj_date = DT2dt(self.context.created())
+        obj_date = DT2dt(self.__get_obj_date())
         obj_date = obj_date.strftime("%B %d, %Y")
         return obj_date
 
@@ -38,8 +50,7 @@ class View(BrowserView):
         returns year of creation date
         """
         obj = self.context
-        #import pdb; pdb.set_trace()
-        obj_date = DT2dt(self.context.created())
+        obj_date = DT2dt(self.__get_obj_date())
         obj_date = obj_date.strftime("%Y")
         return obj_date
 
@@ -194,7 +205,7 @@ class View(BrowserView):
         """
         returns Volume number of Journalarticle according to creation date
         """
-        cyear = int(self.context.created().strftime('%Y'))
+        cyear = int(self.__get_obj_date().strftime('%Y'))
         startyear = 2007
         vol = cyear - startyear +1
         return vol
