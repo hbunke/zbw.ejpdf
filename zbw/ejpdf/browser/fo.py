@@ -11,6 +11,7 @@ from Products.ATContentTypes.utils import DT2dt
 from BeautifulSoup import BeautifulSoup
 from zope.annotation.interfaces import IAnnotations
 from zope.component import getMultiAdapter
+from datetime import datetime
 
 
 class View(BrowserView):
@@ -167,15 +168,23 @@ class View(BrowserView):
         paper_view = getMultiAdapter((self.context, self.request),
                 name="paperView")
         
+        date = datetime.now()
+
         text = u""
         
+
         text += unicode(paper_view.authors_as_string(), 'utf-8')
         pt = self.context.portal_type
         if pt == "JournalPaper":
             type_view = getMultiAdapter((self.context, self.request), name="ja_view")
             version = type_view.last_version_info()
             doi_url = "http://dx.doi.org/%s" %type_view.get_doi()
-            text += " (%s). " %type_view.pubyear()
+            
+            #we must use the actual year here, since private papers don't have
+            #a publish date
+            #text += " (%s). " %type_view.pubyear()
+            text += " (%s). " %date.year
+            
             text += unicode(self.context.Title(), 'utf-8')
             text += ".  <fo:inline font-style='italic'>Economics: The Open-Access, Open-Assessment E-Journal</fo:inline>, "
             text += "Vol. %s, %s" %(type_view.get_volume(), self.context.getId())
@@ -187,6 +196,7 @@ class View(BrowserView):
             type_view = getMultiAdapter((self.context, self.request), name="dp_view")
             url = self.context.absolute_url()
             text += unicode(type_view.cite_as(), 'utf-8')
+            text = text.replace(u"Not published yet", unicode(date.year))
             text += " %s" %url
         
         return text
