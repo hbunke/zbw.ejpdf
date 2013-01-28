@@ -11,7 +11,7 @@
                 tal:content="context/portal_type" /> <span
                     tal:content="context/id" /></strong></p>
 
-        <form method="get" action="#"
+        <form method="post" action="#"
             tal:attributes="action
             string:${context/absolute_url}/@@cover_pdf"
             style="margin-top:12px;">

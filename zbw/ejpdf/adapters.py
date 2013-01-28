@@ -105,7 +105,6 @@ class CoverAnnotation(object):
 
         request_author_keys = ['author_name', 'affil', 'author_email',
                                 'author_id']
-        
         for key in request_author_keys:
             if type(self.request[key]) is not list:
                     self.request[key] = [self.request[key]]
