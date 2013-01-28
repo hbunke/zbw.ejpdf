@@ -156,8 +156,7 @@
                             -->
                             <!-- XXX auch nicht so dolle -->
                             <fo:inline 
-                                keep-together.within-line="" tal:content="view/authors_string" />
-
+                                tal:content="view/authors_string" />
                         </fo:block>
                     
                         
