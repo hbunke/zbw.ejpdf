@@ -118,6 +118,7 @@ class View(BrowserView):
             p.name = 'fo:block'
             del p['style']
             del p['align']
+            del p['class']
             
             p['text-align'] = 'justify'
             p['space-after'] = '6px'
