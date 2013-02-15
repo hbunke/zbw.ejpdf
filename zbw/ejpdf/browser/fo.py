@@ -199,7 +199,10 @@ class View(BrowserView):
         if pt == "DiscussionPaper":
             type_view = getMultiAdapter((self.context, self.request), name="dp_view")
             url = self.context.absolute_url()
-            text += unicode(type_view.cite_as(), 'utf-8')
+            
+            citation = escape(type_view.cite_as())
+
+            text += unicode(citation, 'utf-8')
             text = text.replace(u"Not published yet", unicode(date.year))
             text += " %s" %url
         
