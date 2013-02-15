@@ -12,6 +12,7 @@ from BeautifulSoup import BeautifulSoup
 from zope.annotation.interfaces import IAnnotations
 from zope.component import getMultiAdapter
 from datetime import datetime
+from xml.sax.saxutils import escape
 
 
 class View(BrowserView):
@@ -185,8 +186,10 @@ class View(BrowserView):
             #a publish date
             #text += " (%s). " %type_view.pubyear()
             text += " (%s). " %date.year
+
+            title = self.escape_title()
             
-            text += unicode(self.context.Title(), 'utf-8')
+            text += unicode(title, 'utf-8')
             text += ".  <fo:inline font-style='italic'>Economics: The Open-Access, Open-Assessment E-Journal</fo:inline>, "
             text += "Vol. %s, %s" %(type_view.get_volume(), self.context.getId())
             if version and version['number'] > 1:
@@ -232,8 +235,16 @@ class View(BrowserView):
         si = paper_view.getSpecialIssues()
         if si:
             obj = si[0].getObject()
-            title = obj.Title()
+            title = escape(obj.Title())
             url = obj.absolute_url()
             return {'title' : title, 'url' : url}
         return False
+    
 
+    def escape_title(self):
+        """
+        """
+        title = self.context.Title()
+        title = escape(title)
+        return title
+        
