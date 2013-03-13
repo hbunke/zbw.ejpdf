@@ -68,38 +68,6 @@ class View(BrowserView):
         return uri
     
     
-    def authors_string(self):
-        """
-        """
-        
-        paper_view = getMultiAdapter((self.context, self.request),
-                name="paperView")
-        
-        return unicode(paper_view.authors_as_string(), 'utf-8')
-
-
-
-    def authors(self):
-        """
-        returns dicts with fullname and affiliation
-        """
-        author_id_list = self.context.getAuthors()
-        authors = []
-        catalog = getToolByName(self.context, "portal_catalog")
-        for i in author_id_list:
-            brains = catalog(id=i)
-            for brain in brains:
-                obj = brain.getObject()
-                surname = brain.getSurname
-                firstname = obj.getFirstname()
-                name = "%s %s" %(firstname, surname)
-                affil = obj.getOrganisation()
-                author_id = obj.getId()
-                author = {'author_id' : author_id, 'name' : name, 'affil' : affil}
-                authors.append(author)
-
-        return authors
-
 
     def clean_abstract(self):
         """
@@ -209,14 +177,60 @@ class View(BrowserView):
         return text
 
 
+    def authors(self):
+        """
+        returns dicts with fullname and affiliation
+        """
+        author_id_list = self.context.getAuthors()
+        authors = []
+        catalog = getToolByName(self.context, "portal_catalog")
+        for i in author_id_list:
+            brains = catalog(id=i)
+            for brain in brains:
+                obj = brain.getObject()
+                surname = brain.getSurname
+                firstname = obj.getFirstname()
+                name = "%s %s" %(firstname, surname)
+                affil = obj.getOrganisation()
+                author_id = obj.getId()
+                author = {'author_id' : author_id, 'name' : name, 'affil' : affil}
+                authors.append(author)
 
-    def is_last_author(self, author):
+        return authors
+
+
+    def authors_as_string(self):
         """
         """
         authors = self.authors()
-        if not author == authors[-1]['author_id']:
-            return True
-        return False
+        authors_list = []
+        for author in authors:
+            name = author['name']
+            string = self._authors_concat_string(author, authors)
+            authors_list.append(string)
+        return authors_list
+    
+
+    def _authors_concat_string(self, author, authors):
+        """
+        """
+        nr = len(authors)
+        if nr <= 1:
+            return author['name']
+
+        if nr == 2:
+            if authors[-1] == author:
+                return author['name']
+            return "s% and " %author['name']
+
+        if nr > 2:
+            if authors[-1] == author:
+                return "and %s" %author['name']
+            return "%s,"%author['name']
+        return None
+
+
+
 
     def get_volume(self):
         """

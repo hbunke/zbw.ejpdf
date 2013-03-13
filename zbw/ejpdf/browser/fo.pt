@@ -147,16 +147,18 @@
                             >
 
                             <!--
-                            <tal:authors tal:repeat="author ann/authors"><fo:inline 
-                                 keep-together.within-line="always"><tal:author
-                                 tal:replace="author/name" /><tal:bla
-                                     tal:condition="python:view.is_last_author(author['author_id'])"
-                                     tal:replace="string:,"/></fo:inline>
-                            </tal:authors>
+                            <tal:authors tal:repeat="author ann/authors">
                             -->
-                            <!-- XXX auch nicht so dolle -->
+                            <tal:authors tal:repeat="author view/authors_as_string">
+                            <fo:inline 
+                                 keep-together.within-line="always"><tal:author
+                                 tal:replace="author" /></fo:inline>
+                            </tal:authors>
+                            
+                            <!-- XXX auch nicht so dolle
                             <fo:inline 
                                 tal:content="view/authors_string" />
+                                -->
                         </fo:block>
                     
                         
