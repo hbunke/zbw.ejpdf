@@ -17,7 +17,7 @@
             style="margin-top:12px;">
             
 
-            <tal:block tal:define="ann view/annotations | nothing">
+            <tal:block tal:define="ann view/annotations">
 
             
             <label>Authors</label>
@@ -79,31 +79,31 @@
 
             <div class="field">
                 <label>Received</label>
-                <input name="date_submission" type="text" tal:attributes="value ann/date_submission | nothing" />
+                <input name="date_submission" type="text" tal:attributes="value ann/date_submission | string:" />
             </div>
 
             <div class="field">
                 <label>Accepted as Discussion Paper</label>
-                <input name="date_accepted_as_dp" type="text" tal:attributes="value ann/date_accepted_as_dp | nothing" />
+                <input name="date_accepted_as_dp" type="text" tal:attributes="value ann/date_accepted_as_dp | string:" />
             </div>
 
             <div class="field">
                 <label>Published as Discussion Paper</label>
-                <input name="date_published_as_dp" type="text" tal:attributes="value ann/date_published_as_dp | nothing" />
+                <input name="date_published_as_dp" type="text" tal:attributes="value ann/date_published_as_dp | string:" />
             </div>
 
             <tal:block tal:condition="python:context.portal_type == 'JournalPaper'">
                 <div class="field">
                     <label>Revised</label>
-                    <input name="date_revised" type="text" tal:attributes="value ann/date_revised | nothing" />
+                    <input name="date_revised" type="text" tal:attributes="value ann/date_revised | string:" />
                 </div>
                 <div class="field">
                     <label>Accepted as Journal Article</label>
-                    <input name="date_accepted_as_ja" tal:attributes="value ann/date_accepted_as_ja | nothing" />
+                    <input name="date_accepted_as_ja" tal:attributes="value ann/date_accepted_as_ja | string:" />
                 </div>
                 <div class="field">
                     <label>Published as Journal Article</label>
-                    <input name="date_published_as_ja" tal:attributes="value ann/date_published_as_ja | nothing"/>
+                    <input name="date_published_as_ja" tal:attributes="value ann/date_published_as_ja | string:"/>
                 </div>
            
             

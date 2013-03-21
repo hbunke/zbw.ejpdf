@@ -222,7 +222,7 @@ class View(BrowserView):
         if nr == 2:
             if authors[-1] == author:
                 return author['name']
-            return "s% and " %author['name']
+            return "%s and " %author['name']
 
         if nr > 2:
             if authors[-1] == author:
