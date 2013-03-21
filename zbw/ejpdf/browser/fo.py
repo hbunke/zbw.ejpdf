@@ -128,7 +128,8 @@ class View(BrowserView):
         """
 
         ann = IAnnotations(self.context)
-        return ann['zbw.coverdata']
+        coverdata = ann['zbw.coverdata']
+        return coverdata
 
 
     def citation_string(self):

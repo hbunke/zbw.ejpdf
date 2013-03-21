@@ -46,44 +46,56 @@
                 font-size="7pt" font-family="Helvetica" color="rgb(88,88,88)">
                 
                 <fo:block tal:condition="python:context.portal_type == 'DiscussionPaper'">
-                        <fo:inline keep-together.within-line="always" font-weight="bold">
+                    <fo:inline keep-together.within-line="always" font-weight="bold" 
+                        tal:condition="python:ann['date_submission'] != ''">
                             Received <fo:inline font-weight="normal" tal:content="ann/date_submission" /> 
                         </fo:inline>
-                        <fo:inline keep-together.within-line="always" font-weight="bold">Accepted
+                        <fo:inline keep-together.within-line="always" font-weight="bold"
+                            tal:condition="python:ann['date_accepted_as_dp'] != ''">Accepted
                             as Economics Discussion Paper
                             <fo:inline font-weight="normal" tal:content="ann/date_accepted_as_dp" />
                         </fo:inline>
-                       <fo:inline keep-together.within-line="always" font-weight="bold">Published 
+                        <fo:inline keep-together.within-line="always" font-weight="bold"
+                            tal:condition="python:ann['date_published_as_dp'] != ''">Published 
                         <fo:inline font-weight="normal" tal:content="ann/date_published_as_dp" />
                         </fo:inline>
                </fo:block>
                     
                <tal:journalarticles tal:condition="python:context.portal_type == 'JournalPaper'">
                     <fo:block  space-before="3px">
-                         <fo:inline keep-together.within-line="always" font-weight="bold">
+                        <fo:inline keep-together.within-line="always" font-weight="bold" 
+                            tal:condition="python:ann['date_submission'] != ''">
                             Received <fo:inline font-weight="normal" tal:content="ann/date_submission" /> 
                         </fo:inline>
-                        <fo:inline keep-together.within-line="always" font-weight="bold">Published as
+                        <fo:inline keep-together.within-line="always" font-weight="bold"
+                            tal:condition="python:ann['date_published_as_dp'] != ''">Published as
                             Economics Discussion Paper
                             <fo:inline font-weight="normal" tal:content="ann/date_published_as_dp" />
                         </fo:inline>
                     </fo:block>
                     <fo:block>
-                        <fo:inline keep-together.within-line="always" font-weight="bold">
+                        <fo:inline keep-together.within-line="always" font-weight="bold"
+                            tal:condition="python:ann['date_revised'] != ''">
                             Revised <fo:inline font-weight="normal" tal:content="ann/date_revised" /> 
                        </fo:inline>
-                        <fo:inline keep-together.within-line="always" font-weight="bold">Accepted
+                       <fo:inline keep-together.within-line="always" font-weight="bold"
+                           tal:condition="python:ann['date_accepted_as_ja'] != ''">Accepted
                             <fo:inline font-weight="normal" tal:content="ann/date_accepted_as_ja" /> 
                         </fo:inline>
-                        <fo:inline keep-together.within-line="always" font-weight="bold">Published
+                        <fo:inline keep-together.within-line="always" font-weight="bold"
+                            tal:condition="python:ann['date_published_as_ja'] != ''">Published
                             <fo:inline font-weight="normal" tal:content="ann/date_published_as_ja" /> 
                         </fo:inline>
                     </fo:block>
                 </tal:journalarticles>
 
                 <fo:block space-before="3px">
-                    <fo:inline font-weight="bold">©</fo:inline> Author(s) <fo:inline tal:replace="view/get_publish_year" />. Licensed under the Creative Commons License
+                    <fo:inline font-weight="bold">©</fo:inline> Author(s) 
+                    <fo:inline tal:replace="view/get_publish_year" />. Licensed under the 
+                    <fo:basic-link color="darkblue" external-destination="http://creativecommons.org/licenses/by/3.0/">
+                    Creative Commons License
                     - Attribution 3.0
+                </fo:basic-link>
                 </fo:block>
             </fo:static-content>
             <fo:flow flow-name="xsl-region-body"
