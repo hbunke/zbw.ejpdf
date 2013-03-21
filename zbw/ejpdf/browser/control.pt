@@ -17,7 +17,7 @@
             style="margin-top:12px;">
             
 
-            <tal:block tal:define="ann view/annotations">
+            <tal:block tal:define="ann view/annotations | nothing">
 
             
             <label>Authors</label>

@@ -49,7 +49,7 @@ class View(BrowserView):
                 if k in data:
                     d[k] = data[k]
                 else:
-                    d[k] = False
+                    d[k] = ''
             return d
         
         #all other missing annotations are catched by the template
