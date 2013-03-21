@@ -14,6 +14,7 @@
     <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
 	font-family="Times New Roman" 
     font-size="10pt"
+    tal:define="ann view/annotations"
 	>
 	
 		<fo:layout-master-set>
@@ -33,7 +34,7 @@
                 margin-right="1.5cm">
                 <fo:region-body margin-top="1.5cm" />
 				<fo:region-before extent="1cm" />
-				<fo:region-after extent="0cm" />
+				<fo:region-after extent="2cm" />
 			</fo:simple-page-master>
         
         </fo:layout-master-set>
@@ -42,9 +43,46 @@
         <fo:page-sequence tal:attributes="master-reference context/portal_type">
                
             <fo:static-content flow-name="xsl-region-after"
-                font-size="7pt" font-family="Helvetica">
-                 <fo:block>
-                    © Author(s) <fo:inline tal:replace="view/get_publish_year" />. Licensed under the Creative Commons License
+                font-size="7pt" font-family="Helvetica" color="rgb(88,88,88)">
+                
+                <fo:block tal:condition="python:context.portal_type == 'DiscussionPaper'">
+                        <fo:inline keep-together.within-line="always" font-weight="bold">
+                            Received <fo:inline font-weight="normal" tal:content="ann/date_submission" /> 
+                        </fo:inline>
+                        <fo:inline keep-together.within-line="always" font-weight="bold">Accepted
+                            as Economics Discussion Paper
+                            <fo:inline font-weight="normal" tal:content="ann/date_accepted_as_dp" />
+                        </fo:inline>
+                       <fo:inline keep-together.within-line="always" font-weight="bold">Published 
+                        <fo:inline font-weight="normal" tal:content="ann/date_published_as_dp" />
+                        </fo:inline>
+               </fo:block>
+                    
+               <tal:journalarticles tal:condition="python:context.portal_type == 'JournalPaper'">
+                    <fo:block  space-before="3px">
+                         <fo:inline keep-together.within-line="always" font-weight="bold">
+                            Received <fo:inline font-weight="normal" tal:content="ann/date_submission" /> 
+                        </fo:inline>
+                        <fo:inline keep-together.within-line="always" font-weight="bold">Published as
+                            Economics Discussion Paper
+                            <fo:inline font-weight="normal" tal:content="ann/date_published_as_dp" />
+                        </fo:inline>
+                    </fo:block>
+                    <fo:block>
+                        <fo:inline keep-together.within-line="always" font-weight="bold">
+                            Revised <fo:inline font-weight="normal" tal:content="ann/date_revised" /> 
+                       </fo:inline>
+                        <fo:inline keep-together.within-line="always" font-weight="bold">Accepted
+                            <fo:inline font-weight="normal" tal:content="ann/date_accepted_as_ja" /> 
+                        </fo:inline>
+                        <fo:inline keep-together.within-line="always" font-weight="bold">Published
+                            <fo:inline font-weight="normal" tal:content="ann/date_published_as_ja" /> 
+                        </fo:inline>
+                    </fo:block>
+                </tal:journalarticles>
+
+                <fo:block space-before="3px">
+                    <fo:inline font-weight="bold">©</fo:inline> Author(s) <fo:inline tal:replace="view/get_publish_year" />. Licensed under the Creative Commons License
                     - Attribution 3.0
                 </fo:block>
             </fo:static-content>
@@ -143,12 +181,8 @@
                             font-style="italic"
                             space-before="0.5cm"
                             text-align="left"
-                            tal:define="ann view/annotations"
                             >
 
-                            <!--
-                            <tal:authors tal:repeat="author ann/authors">
-                            -->
                             <tal:authors tal:repeat="author view/authors_as_string">
                             <fo:inline 
                                  keep-together.within-line="always"><tal:author
@@ -171,7 +205,7 @@
                     tal:content="structure abstract" />
     
                     <!-- special issue -->
-                    <tal:si tal:condition="python:context.portal_type == 'JournalPaper'">
+                    <tal:si>
                         <fo:block
                             tal:define="si view/special_issue"
                             tal:condition="si">
@@ -234,9 +268,8 @@
                     <fo:inline font-weight="bold" padding-right="6px">Citation </fo:inline>
                         <tal:citation tal:replace="structure view/citation_string" />
                     </fo:block>
-                    
-                                            
-                
+
+                                                                
                 </fo:block-container>
 
                

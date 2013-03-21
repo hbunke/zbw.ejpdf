@@ -57,39 +57,60 @@
                 <div class="formHelp">Type keywords as they should appear on
                     cover page</div>
                 <input type="text" name="keywords" size="100" 
-                tal:attributes="value ann/keywords" />    
+                tal:attributes="value ann/keywords | nothing" />    
             </div>
 
 
-        <!--
-            <div class="field">
-                <label>Correspondence</label>
-                <div class="formHelp">Address of contact
-                    person, but NOT email-address, name and affiliation</div>
-                <textarea name="correspondence" rows="5" cols="40"><span
-                        tal:replace="ann/correspondence" /></textarea>
-            </div>
-        -->
-
-
-            <!--
-            <div class="field">
-                <label>Correspondence Email</label>
-                <div class="formHelp">Email address of contact</div>
-                <input name="correspondence_email" size="80"
-                tal:attributes="value ann/email" />
-            </div>
-            -->
-
-            <div class="field">
+        <div class="field">
                 <label>Additional Information</label>
                 <div class="formHelp">Provides any additional infos, such as
                     projects, financees etc.</div>
-                <textarea name="additional" value="" rows="5"
-                    cols="40"><span tal:replace="ann/additional" /></textarea>
+                <textarea name="additional" value="" rows="5a"
+                    cols="40"><span tal:replace="ann/additional | nothing" /></textarea>
             </div>
 
+
+            
+            <label>Timeline</label>
+               <div class="formHelp">
+                Insert dates as they should appear on the cover page.
+            </div>
+            <div class="fieldset" style="font-size:11px; background:rgb(244,244,244);">
+
+            <div class="field">
+                <label>Received</label>
+                <input name="date_submission" type="text" tal:attributes="value ann/date_submission | nothing" />
+            </div>
+
+            <div class="field">
+                <label>Accepted as Discussion Paper</label>
+                <input name="date_accepted_as_dp" type="text" tal:attributes="value ann/date_accepted_as_dp | nothing" />
+            </div>
+
+            <div class="field">
+                <label>Published as Discussion Paper</label>
+                <input name="date_published_as_dp" type="text" tal:attributes="value ann/date_published_as_dp | nothing" />
+            </div>
+
+            <tal:block tal:condition="python:context.portal_type == 'JournalPaper'">
+                <div class="field">
+                    <label>Revised</label>
+                    <input name="date_revised" type="text" tal:attributes="value ann/date_revised | nothing" />
+                </div>
+                <div class="field">
+                    <label>Accepted as Journal Article</label>
+                    <input name="date_accepted_as_ja" tal:attributes="value ann/date_accepted_as_ja | nothing" />
+                </div>
+                <div class="field">
+                    <label>Published as Journal Article</label>
+                    <input name="date_published_as_ja" tal:attributes="value ann/date_published_as_ja | nothing"/>
+                </div>
+           
+            
             </tal:block>
+        </div>
+    
+        </tal:block>
             
             <div style="text-align:center">
             <input name="cover" value=" Create PDF Cover " type="submit"

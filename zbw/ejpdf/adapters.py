@@ -130,6 +130,12 @@ class CoverAnnotation(object):
         self.ann['authors'] = authors_new
         keys = ["keywords", 
                 "additional",
+                "date_submission",
+                "date_accepted_as_dp",
+                "date_published_as_dp",
+                "date_revised", 
+                "date_accepted_as_ja",
+                "date_published_as_ja",
                 ]
 
         for key in keys:
@@ -137,7 +143,6 @@ class CoverAnnotation(object):
                 self.ann[key] = self.request[key]
             else:
                 self.ann[key] = u""
-
 
 
 

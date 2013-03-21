@@ -34,7 +34,17 @@ class View(BrowserView):
             
             #make sure that all necessary keys are in annotations; some
             #annotations are from an earlier dev stage
-            keys = ['keywords', 'additional', 'authors']
+            keys = ['keywords', 
+                    'additional', 
+                    'authors', 
+                    "date_submission",
+                    "date_accepted_as_dp",
+                    "date_published_as_dp",
+                    "date_revised", 
+                    "date_accepted_as_ja",
+                    "date_published_as_ja",
+                    ]
+
             for k in keys:
                 if k in data:
                     d[k] = data[k]
@@ -42,9 +52,8 @@ class View(BrowserView):
                     d[k] = False
             return d
         
+        #all other missing annotations are catched by the template
         return dict(
-                keywords = u"",
-                additional = u"",
                 authors = False)
 
 
