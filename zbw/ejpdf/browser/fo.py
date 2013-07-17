@@ -222,7 +222,10 @@ class View(BrowserView):
         if nr == 2:
             if authors[-1] == author:
                 return author['name']
-            return "%s and " %author['name']
+            #this is actually quite ugly. It relies on XSL-FO to produce the 
+            #necessary whitespace after 'and'. We had double-whitespace when 
+            #returning "and "    
+            return "%s and" %author['name'] 
 
         if nr > 2:
             if authors[-1] == author:

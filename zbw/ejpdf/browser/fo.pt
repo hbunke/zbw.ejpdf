@@ -196,15 +196,9 @@
                             >
 
                             <tal:authors tal:repeat="author view/authors_as_string">
-                            <fo:inline 
+                                <fo:inline 
                                  keep-together.within-line="always"><tal:author
-                                 tal:replace="author" /></fo:inline>
-                            </tal:authors>
-                            
-                            <!-- XXX auch nicht so dolle
-                            <fo:inline 
-                                tal:content="view/authors_string" />
-                                -->
+                                 tal:replace="author" /></fo:inline></tal:authors>
                         </fo:block>
                     
                         
