@@ -76,13 +76,15 @@ class View(BrowserView):
                 firstname = obj.getFirstname()
                 name = "%s %s" %(firstname, surname)
                
+                ##XXX workaround for a strange bug
+                affil = obj.getOrganisation()
                 try:
                     dic = ann[key]['authors']
                     for d in dic:
                         if i == d['author_id']:
                             affil = d['affil']
                 except:
-                    affil = obj.getOrganisation()
+                    pass
                 
                 author_id = obj.getId()
                 email = obj.getEmail()
