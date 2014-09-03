@@ -160,7 +160,12 @@ class View(BrowserView):
             
             text += unicode(title, 'utf-8')
             text += ".  <fo:inline font-style='italic'>Economics: The Open-Access, Open-Assessment E-Journal</fo:inline>, "
-            text += "Vol. %s, %s" %(type_view.get_volume(), self.context.getId())
+            text += "%s (%s)" %(type_view.get_volume(), self.context.getId())
+            
+            if self.context.getPages():
+                pages = self.context.getPages()
+                text += u": 1—%s" %pages
+
             if version and version['number'] > 1:
                text += "(Version %s)" %version['number']
             text += ". %s" %doi_url
