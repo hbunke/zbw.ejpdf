@@ -112,6 +112,19 @@ class View(BrowserView):
             sup['baseline-shift'] = 'sup'
             sup['font-size'] = '80%'
         
+        while True:
+            em = soup.find('em')
+            if not em:
+                break
+            em.name = 'fo:inline'
+            em['font-style'] = 'italic'
+
+        while True:
+            span = soup.find('span')
+            if not span:
+                break
+            span.name = 'fo:inline'
+
 
         # removing <a> tags without tag content
         links = soup.findAll('a')
