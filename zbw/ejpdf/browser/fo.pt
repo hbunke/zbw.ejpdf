@@ -213,7 +213,7 @@
     
                     <!-- special issue -->
                     <tal:si>
-                        <fo:block
+                        <fo:block font-size="9px"
                             tal:define="si view/special_issue"
                             tal:condition="si">
                             Published in Special Issue
@@ -223,7 +223,42 @@
                                         tal:content="structure si/title"/>
                                 </fo:inline>
                             </fo:block>
-                    </tal:si>
+                        </tal:si>
+
+
+                <tal:policypaper
+                    tal:condition="context/isPolicyPaper"
+                    tal:define="type context/Type;
+                                url  string:$navroot/special-areas/policy-papers">
+                   <fo:block space-before="3px" font-size="9px">
+                        <fo:inline tal:condition="python:type == 'DiscussionPaper'">
+                           (Submitted as
+                        </fo:inline>
+                        <fo:inline tal:condition="python:type == 'JournalPaper'">
+                        (Published as
+                            <fo:basic-link color="darkblue"
+                                tal:attributes="external-destination url">Policy Paper)</fo:basic-link>
+                        </fo:inline>
+                    </fo:block>
+                </tal:policypaper>
+
+                <tal:policypaper
+                    tal:condition="context/isSurveyAndOverviewPaper"
+                    tal:define="type context/Type;
+                                url  string:$navroot/special-areas/surveys-and-overviews">
+                   <fo:block space-before="3px" font-size="9px">
+                        <fo:inline tal:condition="python:type == 'DiscussionPaper'">
+                            (Submitted as
+                        </fo:inline>
+                        <fo:inline tal:condition="python:type == 'JournalPaper'">
+                        (Published as
+                            <fo:basic-link color="darkblue"
+                                tal:attributes="external-destination url">Survey and Overview)</fo:basic-link>
+                        </fo:inline>
+                    </fo:block>
+                </tal:policypaper>
+
+
                         
                     <fo:block-container font-size="10px" space-before="6px">
 
