@@ -216,12 +216,10 @@
                         <fo:block font-size="9px"
                             tal:define="si view/special_issue"
                             tal:condition="si">
-                            Published in Special Issue
-                            <fo:inline color="darkblue">
-                                <fo:basic-link
+                            (Published in Special Issue
+                                <fo:basic-link color="darkblue"
                                         tal:attributes="external-destination si/url"
-                                        tal:content="structure si/title"/>
-                                </fo:inline>
+                                        tal:content="structure si/title"/>)
                             </fo:block>
                         </tal:si>
 
@@ -242,7 +240,7 @@
                     </fo:block>
                 </tal:policypaper>
 
-                <tal:policypaper
+                <tal:surveyandoverview
                     tal:condition="context/isSurveyAndOverviewPaper"
                     tal:define="type context/Type;
                                 url  string:$navroot/special-areas/surveys-and-overviews">
@@ -256,7 +254,7 @@
                                 tal:attributes="external-destination url">Survey and Overview)</fo:basic-link>
                         </fo:inline>
                     </fo:block>
-                </tal:policypaper>
+                </tal:surveyandoverview>
 
 
                         
