@@ -234,9 +234,8 @@
                         </fo:inline>
                         <fo:inline tal:condition="python:type == 'JournalPaper'">
                         (Published as
-                            <fo:basic-link color="darkblue"
-                                tal:attributes="external-destination url">Policy Paper)</fo:basic-link>
-                        </fo:inline>
+                        </fo:inline><fo:basic-link color="darkblue"
+                        tal:attributes="external-destination url">Policy Paper</fo:basic-link>)
                     </fo:block>
                 </tal:policypaper>
 
@@ -249,10 +248,9 @@
                             (Submitted as
                         </fo:inline>
                         <fo:inline tal:condition="python:type == 'JournalPaper'">
-                        (Published as
-                            <fo:basic-link color="darkblue"
-                                tal:attributes="external-destination url">Survey and Overview)</fo:basic-link>
-                        </fo:inline>
+                            (Published as
+                        </fo:inline><fo:basic-link color="darkblue"
+                        tal:attributes="external-destination url">Survey and Overview</fo:basic-link>)
                     </fo:block>
                 </tal:surveyandoverview>
 
