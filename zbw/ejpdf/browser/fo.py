@@ -111,8 +111,7 @@ class View(BrowserView):
             sup.name = 'fo:inline'
             sup['baseline-shift'] = 'sup'
             sup['font-size'] = '80%'
-      
-
+        
         while True:
             em = soup.find('em')
             if not em:
@@ -125,7 +124,6 @@ class View(BrowserView):
             if not span:
                 break
             span.name = 'fo:inline'
-
 
 
         # removing <a> tags without tag content
