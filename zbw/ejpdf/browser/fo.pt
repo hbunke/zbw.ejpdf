@@ -90,8 +90,8 @@
                 </tal:journalarticles>
 
                 <fo:block space-before="3px">
-                    <!--   <fo:inline font-weight="bold">©</fo:inline> Author(s)
-                    <fo:inline tal:replace="view/get_publish_year" />.--> 
+                    <fo:inline font-weight="bold">©</fo:inline> Author(s)
+                    <fo:inline tal:replace="view/get_publish_year" />.
                     Licensed under the 
                     <fo:basic-link color="darkblue" external-destination="http://creativecommons.org/licenses/by/3.0/">
                     Creative Commons License
