@@ -287,3 +287,8 @@ class View(BrowserView):
         title = escape(title)
         return title
         
+
+    def escape_additional(self):
+        ann = self.annotations()
+        additional = escape(ann['additional'])
+        return unicode(additional, 'utf-8')

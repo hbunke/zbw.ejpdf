@@ -51,7 +51,6 @@ class Cover(object):
         stdin = open('/dev/null')
         stdout = stderr = PIPE
         env = {'PATH':'/bin:/usr/bin:/usr/local/bin'}
-
         p_fop = Popen(fop_list, 
                 stderr=stderr, 
                 stdout=stdout, 
