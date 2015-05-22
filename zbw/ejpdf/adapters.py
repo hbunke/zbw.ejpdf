@@ -10,7 +10,7 @@ from zope.annotation.interfaces import IAnnotations
 from persistent.dict import PersistentDict
 from plone.registry.interfaces import IRegistry
 from zbw.ejpdf.interfaces import ICoverSettings
-
+from operator import itemgetter
 
 class Cover(object):
     """
@@ -100,33 +100,29 @@ class CoverAnnotation(object):
         # a little complicated here, but we need to combine several field
         # values from the control form, in order to get all necessary author
         # information
-        #XXX could be done better, most probably ;-)
 
         request_author_keys = ['author_name', 'affil', 'author_email',
                                 'author_id']
+        
+        #XXX why is that...?
         for key in request_author_keys:
             if type(self.request[key]) is not list:
-                    self.request[key] = [self.request[key]]
+                    self.request[key] = list(self.request[key])
             
         authors = zip(self.request['author_name'], self.request['affil'],
                 self.request['author_email'], self.request['author_id'])
-        authors_new = []
-        for author in authors:
-            author_new = dict(
-                            name = author[0],
-                            affil = author[1],
-                            email = author[2],
-                            author_id = author[3],
-                            corresponding = False
-                            )
-
-            if author[3] == self.request['corresponding_author']:
-                author_new['corresponding'] = True
-            
-            authors_new.append(author_new)
-       
+        
+        ig = itemgetter
+        an = map(lambda author: dict(
+                    name = ig(0)(author),
+                    affil = ig(1)(author),
+                    email = ig(2)(author),
+                    author_id = ig(3)(author),
+                    corresponding = (ig(3)(author) == self.request['corresponding_author'])
+                    ), authors)
+        
         #writing the annotations
-        self.ann['authors'] = authors_new
+        self.ann['authors'] = an
         keys = ["keywords", 
                 "additional",
                 "date_submission",

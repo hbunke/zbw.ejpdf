@@ -13,7 +13,7 @@ from zope.annotation.interfaces import IAnnotations
 from zope.component import getMultiAdapter
 from datetime import datetime
 from xml.sax.saxutils import escape
-
+from operator import itemgetter
 
 class View(BrowserView):
 
@@ -198,34 +198,27 @@ class View(BrowserView):
         """
         returns dicts with fullname and affiliation
         """
-        author_id_list = self.context.getAuthors()
-        authors = []
         catalog = getToolByName(self.context, "portal_catalog")
-        for i in author_id_list:
-            brains = catalog(id=i)
-            for brain in brains:
-                obj = brain.getObject()
-                surname = brain.getSurname
-                firstname = obj.getFirstname()
-                name = "%s %s" %(firstname, surname)
-                affil = obj.getOrganisation()
-                author_id = obj.getId()
-                author = {'author_id' : author_id, 'name' : name, 'affil' : affil}
-                authors.append(author)
-
+        
+        brains = map(lambda author_id: itemgetter(0)(catalog(id=author_id)),
+                self.context.getAuthors())
+        
+        authors = map(lambda brain: dict(
+            author_id = brain.getObject().getId(),
+            name = '{} {}'.format(brain.getObject().getFirstname(), brain.getSurname),
+            affil = brain.getObject().getOrganisation()
+            ), brains)
+        
         return authors
 
 
     def authors_as_string(self):
         """
         """
-        authors = self.authors()
-        authors_list = []
-        for author in authors:
-            name = author['name']
-            string = self._authors_concat_string(author, authors)
-            authors_list.append(string)
-        return authors_list
+        
+        return map(lambda author: self._authors_concat_string(author,
+                    self.authors()), self.authors())
+
     
 
     def _authors_concat_string(self, author, authors):
