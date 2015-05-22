@@ -130,9 +130,8 @@ class View(BrowserView):
         links = soup.findAll('a')
         for l in links:
             l.replaceWithChildren()
-
+        
         return unicode(soup)
-        #return soup
 
 
     def annotations(self):
@@ -192,7 +191,6 @@ class View(BrowserView):
             text += unicode(citation, 'utf-8')
             text = text.replace(u"Not published yet", unicode(date.year))
             text += " %s" %url
-        
         return text
 
 
