@@ -169,9 +169,12 @@ class View(BrowserView):
             text += " (%s). " %date.year
 
             title = self.escape_title()
-            
             text += unicode(title, 'utf-8')
-            text += ".  <fo:inline font-style='italic'>Economics: The Open-Access, Open-Assessment E-Journal</fo:inline>, "
+            
+            signs = ('?', '!', '.')
+            if not text.endswith(signs):
+                text += "."
+            text += " <fo:inline font-style='italic'>Economics: The Open-Access, Open-Assessment E-Journal</fo:inline>, "
             text += "%s (%s)" %(type_view.get_volume(), self.context.getId())
             
             if self.context.getPages():

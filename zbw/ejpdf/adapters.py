@@ -104,25 +104,24 @@ class CoverAnnotation(object):
         request_author_keys = ['author_name', 'affil', 'author_email',
                                 'author_id']
         
-        #XXX why is that...?
         for key in request_author_keys:
-            if type(self.request[key]) is not list:
-                    self.request[key] = list(self.request[key])
+            if isinstance(self.request[key], basestring):
+                self.request[key] = [self.request[key]]
             
         authors = zip(self.request['author_name'], self.request['affil'],
                 self.request['author_email'], self.request['author_id'])
-        
-        ig = itemgetter
-        an = map(lambda author: dict(
-                    name = ig(0)(author),
-                    affil = ig(1)(author),
-                    email = ig(2)(author),
-                    author_id = ig(3)(author),
-                    corresponding = (ig(3)(author) == self.request['corresponding_author'])
-                    ), authors)
-        
-        #writing the annotations
-        self.ann['authors'] = an
+ 
+        #what was the reason for using itemgetter() here...?
+        self.ann['authors'] = map(lambda author: dict(
+                        name = itemgetter(0)(author),
+                        affil = itemgetter(1)(author),
+                        email = itemgetter(2)(author),
+                        author_id = itemgetter(3)(author),
+                        corresponding = (
+                            itemgetter(3)(author) == self.request['corresponding_author']
+                            ) #generator
+                        ), authors)
+                
         keys = ["keywords", 
                 "additional",
                 "date_submission",
