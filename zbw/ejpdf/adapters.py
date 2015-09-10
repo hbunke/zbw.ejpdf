@@ -93,13 +93,9 @@ class CoverAnnotation(object):
         # for debugging and testing: first delete previously stored annotations
         #del ann[KEY]
 
-        if not ann.has_key(KEY):
+        if KEY not in ann:
             ann[KEY] = PersistentDict()
         self.ann = ann[KEY]
-
-        # a little complicated here, but we need to combine several field
-        # values from the control form, in order to get all necessary author
-        # information
 
         request_author_keys = ['author_name', 'affil', 'author_email',
                                 'author_id']
@@ -111,17 +107,16 @@ class CoverAnnotation(object):
         authors = zip(self.request['author_name'], self.request['affil'],
                 self.request['author_email'], self.request['author_id'])
  
-        #what was the reason for using itemgetter() here...?
         self.ann['authors'] = map(lambda author: dict(
-                        name = itemgetter(0)(author),
-                        affil = itemgetter(1)(author),
-                        email = itemgetter(2)(author),
-                        author_id = itemgetter(3)(author),
-                        corresponding = (
-                            itemgetter(3)(author) == self.request['corresponding_author']
-                            ) #generator
-                        ), authors)
-                
+                name = author[0],
+                affil = author[1],
+                email = author[2],
+                author_id = author[3],
+                #generator expression; boolean
+                corresponding = (author[3] == self.request['corresponding_author']) 
+                ), 
+                authors)
+        
         keys = ["keywords", 
                 "additional",
                 "date_submission",
@@ -133,11 +128,11 @@ class CoverAnnotation(object):
                 ]
 
         for key in keys:
+            self.ann[key] = u""
             if key in self.request:
                 self.ann[key] = self.request[key]
-            else:
-                self.ann[key] = u""
 
+        
 
 
 class FOPError(Exception):
