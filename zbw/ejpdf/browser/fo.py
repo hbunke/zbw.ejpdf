@@ -46,16 +46,24 @@ class View(BrowserView):
         obj_date = obj_date.strftime("%B %d, %Y")
         return obj_date
 
+    def last_version_date(self):
+        """
+        """
+        ja_view = getMultiAdapter((self.context, self.request),
+                                  name="ja_view")
+        last_version = ja_view.last_version_info()
+        if last_version and last_version['number'] > 1:
+            obj_date = last_version['date']
+            return obj_date
+        return None
 
     def get_publish_year(self):
         """
         returns year of creation date
         """
-        obj = self.context
         obj_date = DT2dt(self.__get_obj_date())
         obj_date = obj_date.strftime("%Y")
         return obj_date
-
 
     def uri(self):
         """
@@ -163,10 +171,10 @@ class View(BrowserView):
             version = type_view.last_version_info()
             doi_url = "http://dx.doi.org/%s" %type_view.get_doi()
             
-            #we must use the actual year here, since private papers don't have
-            #a publish date
-            #text += " (%s). " %type_view.pubyear()
-            text += " (%s). " %date.year
+            if version:
+                text += " ({}). ".format(version['year'])
+            else:
+                text += " ({}). ".format(self.context.created().strftime("%Y"))
 
             title = self.escape_title()
             text += unicode(title, 'utf-8')
@@ -182,7 +190,7 @@ class View(BrowserView):
                 text += u": 1—%s" %pages
 
             if version and version['number'] > 1:
-               text += "(Version %s)" %version['number']
+               text += " (Version %s)" %version['number']
             text += ". %s" %doi_url
         
         if pt == "DiscussionPaper":

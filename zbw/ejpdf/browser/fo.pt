@@ -159,7 +159,13 @@
                                         tal:attributes="external-destination view/uri"
                                         tal:content="view/uri"/>
                                 </fo:inline>
-                        
+                            </fo:block>
+                            <fo:block tal:condition="view/last_version_date">
+                                <fo:inline
+                                    tal:define="last_version_info context/@@ja_view/last_version_info">
+                                    Version <span tal:replace="last_version_info/number" /> - 
+                                    <span tal:replace="last_version_info/date" />
+                                </fo:inline>
                             </fo:block>
 
                         </fo:block-container>
