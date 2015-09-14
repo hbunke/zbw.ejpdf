@@ -49,12 +49,13 @@ class View(BrowserView):
     def last_version_date(self):
         """
         """
-        ja_view = getMultiAdapter((self.context, self.request),
-                                  name="ja_view")
-        last_version = ja_view.last_version_info()
-        if last_version and last_version['number'] > 1:
-            obj_date = last_version['date']
-            return obj_date
+        if self.context.portal_type == "JournalPaper":
+            ja_view = getMultiAdapter((self.context, self.request),
+                                    name="ja_view")
+            last_version = ja_view.last_version_info()
+            if last_version and last_version['number'] > 1:
+                obj_date = last_version['date']
+                return obj_date
         return None
 
     def get_publish_year(self):
