@@ -93,9 +93,9 @@
                     <fo:inline font-weight="bold">©</fo:inline> Author(s)
                     <fo:inline tal:replace="view/get_publish_year" />.
                     Licensed under the 
-                    <fo:basic-link color="darkblue" external-destination="http://creativecommons.org/licenses/by/3.0/">
+                    <fo:basic-link color="darkblue" external-destination="http://creativecommons.org/licenses/by/4.0/">
                     Creative Commons License
-                    - Attribution 3.0
+                    - Attribution 4.0 International (CC BY 4.0)
                 </fo:basic-link>
                 </fo:block>
             </fo:static-content>
