@@ -260,6 +260,22 @@
                     </fo:block>
                 </tal:surveyandoverview>
 
+                <tal:replication
+                    tal:condition="context/isReplication"
+                    tal:define="type context/Type;
+                                url  string:$navroot/special-areas/replications">
+                   <fo:block space-before="3px" font-size="9px">
+                        <fo:inline tal:condition="python:type == 'DiscussionPaper'">
+                            (Submitted as
+                        </fo:inline>
+                        <fo:inline tal:condition="python:type == 'JournalPaper'">
+                            (Published as
+                        </fo:inline><fo:basic-link color="darkblue"
+                        tal:attributes="external-destination url">Replication Study</fo:basic-link>)
+                    </fo:block>
+                </tal:replication>
+
+
 
                         
                     <fo:block-container font-size="10px" space-before="6px">
