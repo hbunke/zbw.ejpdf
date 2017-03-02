@@ -5,20 +5,20 @@
     xmlns:tal="http://xml.zope.org/namespaces/tal"
     xmlns:metal="http://xml.zope.org/namespaces/metal"
     >
-    
-                
+
+
     <!-- TODO:
          -  work on hyphenation
     -->
 
     <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
-	font-family="Times New Roman" 
+	font-family="Times New Roman"
     font-size="10pt"
     tal:define="ann view/annotations"
 	>
-	
+
 		<fo:layout-master-set>
-			
+
 			<fo:simple-page-master master-name="DiscussionPaper"
 				page-width="210mm" page-height="297mm"
 				margin-top="1.5cm" margin-bottom="1.25cm" margin-left="3.6cm"
@@ -36,19 +36,19 @@
 				<fo:region-before extent="1cm" />
 				<fo:region-after extent="2cm" />
 			</fo:simple-page-master>
-        
+
         </fo:layout-master-set>
 
-        <!-- dirty trick ;-) --> 
-        <fo:page-sequence tal:attributes="master-reference context/portal_type">
-               
+        <!-- dirty trick ;-)
+        <fo:page-sequence tal:attributes="master-reference context/portal_type">-->
+        <fo:page-sequence master-reference="DiscussionPaper">
             <fo:static-content flow-name="xsl-region-after"
                 font-size="7pt" font-family="Helvetica" color="rgb(88,88,88)">
-                
+
                 <fo:block tal:condition="python:context.portal_type == 'DiscussionPaper'">
-                    <fo:inline keep-together.within-line="always" font-weight="bold" 
+                    <fo:inline keep-together.within-line="always" font-weight="bold"
                         tal:condition="python:ann['date_submission'] != ''">
-                            Received <fo:inline font-weight="normal" tal:content="ann/date_submission" /> 
+                            Received <fo:inline font-weight="normal" tal:content="ann/date_submission" />
                         </fo:inline>
                         <fo:inline keep-together.within-line="always" font-weight="bold"
                             tal:condition="python:ann['date_accepted_as_dp'] != ''">Accepted
@@ -56,16 +56,16 @@
                             <fo:inline font-weight="normal" tal:content="ann/date_accepted_as_dp" />
                         </fo:inline>
                         <fo:inline keep-together.within-line="always" font-weight="bold"
-                            tal:condition="python:ann['date_published_as_dp'] != ''">Published 
+                            tal:condition="python:ann['date_published_as_dp'] != ''">Published
                         <fo:inline font-weight="normal" tal:content="ann/date_published_as_dp" />
                         </fo:inline>
                </fo:block>
-                    
+
                <tal:journalarticles tal:condition="python:context.portal_type == 'JournalPaper'">
                     <fo:block  space-before="3px">
-                        <fo:inline keep-together.within-line="always" font-weight="bold" 
+                        <fo:inline keep-together.within-line="always" font-weight="bold"
                             tal:condition="python:ann['date_submission'] != ''">
-                            Received <fo:inline font-weight="normal" tal:content="ann/date_submission" /> 
+                            Received <fo:inline font-weight="normal" tal:content="ann/date_submission" />
                         </fo:inline>
                         <fo:inline keep-together.within-line="always" font-weight="bold"
                             tal:condition="python:ann['date_published_as_dp'] != ''">Published as
@@ -76,15 +76,15 @@
                     <fo:block>
                         <fo:inline keep-together.within-line="always" font-weight="bold"
                             tal:condition="python:ann['date_revised'] != ''">
-                            Revised <fo:inline font-weight="normal" tal:content="ann/date_revised" /> 
+                            Revised <fo:inline font-weight="normal" tal:content="ann/date_revised" />
                        </fo:inline>
                        <fo:inline keep-together.within-line="always" font-weight="bold"
                            tal:condition="python:ann['date_accepted_as_ja'] != ''">Accepted
-                            <fo:inline font-weight="normal" tal:content="ann/date_accepted_as_ja" /> 
+                            <fo:inline font-weight="normal" tal:content="ann/date_accepted_as_ja" />
                         </fo:inline>
                         <fo:inline keep-together.within-line="always" font-weight="bold"
                             tal:condition="python:ann['date_published_as_ja'] != ''">Published
-                            <fo:inline font-weight="normal" tal:content="ann/date_published_as_ja" /> 
+                            <fo:inline font-weight="normal" tal:content="ann/date_published_as_ja" />
                         </fo:inline>
                     </fo:block>
                 </tal:journalarticles>
@@ -92,7 +92,7 @@
                 <fo:block space-before="3px">
                     <fo:inline font-weight="bold">©</fo:inline> Author(s)
                     <fo:inline tal:replace="view/get_publish_year" />.
-                    Licensed under the 
+                    Licensed under the
                     <fo:basic-link color="darkblue" external-destination="http://creativecommons.org/licenses/by/4.0/">
                     Creative Commons License
                     - Attribution 4.0 International (CC BY 4.0)
@@ -101,34 +101,35 @@
             </fo:static-content>
             <fo:flow flow-name="xsl-region-body"
                 tal:define="navroot context/@@plone_portal_state/navigation_root_url;
-                            logo    string:${navroot}/++resource++zbw.ejpdf/logo3.tif;
+                            logo    string:${navroot}/++resource++zbw.ejpdf/logo_new.png;
                             url string:{context/absolute_url};
                             mail_icon string:${navroot}/++resource++zbw.ejpdf/mail.svg;">
-						
-                <!-- Logo --> 
-                    <fo:block-container absolute-position="fixed" top="0.75cm" 
-                    left="1cm"
-                    tal:condition="python:context.portal_type=='DiscussionPaper'"
-                    >
+
+                <!-- Logo -->
+                    <fo:block-container absolute-position="fixed" top="1cm"
+                    left="2.6cm">
                         <fo:block>
-                            <fo:external-graphic 
-                                content-height="100%" content-width="100%"
-                                tal:attributes="src logo" />
-                        </fo:block>
-                    </fo:block-container>
-               
-                    <fo:block-container absolute-position="fixed" top="0.75cm" 
-                    left="1cm"
-                    tal:condition = "python:context.portal_type == 'JournalPaper'">
-                        <fo:block >
-                            <fo:external-graphic 
+                            <fo:external-graphic
                                 content-height="75%" content-width="75%"
                                 tal:attributes="src logo" />
                         </fo:block>
                     </fo:block-container>
-                
+
+                    <!--
+                    <fo:block-container absolute-position="fixed" top="0.75cm"
+                    left="1cm"
+                    tal:condition = "python:context.portal_type == 'JournalPaper'">
+                        <fo:block >
+                            <fo:external-graphic
+                                content-height="75%" content-width="75%"
+                                tal:attributes="src logo" />
+                        </fo:block>
+                    </fo:block-container>
+                    -->
+
                     <!-- infozeile -->
-                    <fo:block-container space-before="0px" margin-right="-20px"
+                    <fo:block-container space-before="-1cm" margin-right="-20px"
+
                         font-family="Helvetica"
                         font-size="8pt">
 
@@ -138,20 +139,20 @@
                             Paper"
                                 />
                         </fo:block>
-                        
+
                         <fo:block>
-                            
+
                                 <fo:inline
                                     tal:condition="python:context.portal_type ==
                                                 'DiscussionPaper'">
-                                No. 
+                                No.
                                 </fo:inline>
                                 <fo:inline
                                     tal:condition="python:context.portal_type =='JournalPaper'">
-                                Vol. 
-                                    <fo:inline tal:replace="view/get_volume" />, 
+                                Vol.
+                                    <fo:inline tal:replace="view/get_volume" />,
                                 </fo:inline>
-                            
+
                                 <fo:inline tal:content="context/id" /> |
                                 <fo:inline tal:content="view/publish_date" /> |
                                 <fo:inline color="darkblue">
@@ -163,7 +164,7 @@
                             <fo:block tal:condition="view/last_version_date">
                                 <fo:inline
                                     tal:define="last_version_info context/@@ja_view/last_version_info">
-                                    Version <span tal:replace="last_version_info/number" /> - 
+                                    Version <span tal:replace="last_version_info/number" /> -
                                     <span tal:replace="last_version_info/date" />
                                 </fo:inline>
                             </fo:block>
@@ -180,43 +181,43 @@
                             <fo:basic-link color="darkblue"
                                 tal:define="jp python:context.getBRefs('journalpaper_discussionpaper')[0]"
                                 tal:attributes="external-destination jp/absolute_url" tal:content="jp/absolute_url" />
-                        </fo:block>                      
+                        </fo:block>
                     </fo:block-container>
 
-                   
-                    
+
+
                     <!-- Titel -->
                     <fo:block
                         font-size="17pt"
                         font-weight="bold"
                         text-align="left"
-                        space-before="1.25cm"
+                        space-before="1cm"
                         tal:content="structure view/escape_title" />
-                    
+
 
                     <!-- Authors -->
-                        <fo:block 
-                            font-size="14pt" 
+                        <fo:block
+                            font-size="14pt"
                             font-style="italic"
                             space-before="0.5cm"
                             text-align="left"
                             >
 
                             <tal:authors tal:repeat="author view/authors_as_string">
-                                <fo:inline 
+                                <fo:inline
                                  keep-together.within-line="always"><tal:author
                                  tal:replace="author" /></fo:inline></tal:authors>
                         </fo:block>
-                    
-                        
-                    
+
+
+
                     <!-- abstract -->
                     <fo:block font-weight="bold"
                     space-before="18px">Abstract </fo:block>
-                    
+
                 <tal:abstract tal:define="abstract view/clean_abstract"
                     tal:content="structure abstract" />
-    
+
                     <!-- special issue -->
                     <tal:si>
                         <fo:block font-size="9px"
@@ -277,7 +278,7 @@
 
 
 
-                        
+
                     <fo:block-container font-size="10px" space-before="6px">
 
                     <fo:block>
@@ -289,7 +290,7 @@
 
                     <fo:block space-before="0px" tal:define="ann
                     view/annotations">
-                        <fo:inline font-weight="bold" padding-right="9px">Keywords</fo:inline> 
+                        <fo:inline font-weight="bold" padding-right="9px">Keywords</fo:inline>
                         <tal:keywords tal:replace="ann/keywords"
                         />
                     </fo:block>
@@ -300,14 +301,14 @@
                         </fo:inline>
                         <tal:authors tal:repeat="author ann/authors">
                             <fo:block>
-                            <!-- looks silly! 
+                            <!-- looks silly!
                                  <fo:block margin-left="0.5cm" text-indent="-0.5cm">
                                -->
 
                                 <fo:inline tal:content="author/name" font-style="italic" />,
                                 <fo:inline tal:condition="not:author/corresponding" tal:content="author/affil" />
                                 <tal:correspondence tal:condition="author/corresponding">
-                                     <fo:external-graphic 
+                                     <fo:external-graphic
                                     tal:attributes="src mail_icon" content-width="50%" content-height="50%" />
                                     <fo:inline tal:content="author/affil" />,
                                     <fo:inline tal:content="author/email" />
@@ -329,15 +330,15 @@
                         <tal:citation tal:replace="structure view/citation_string" />
                     </fo:block>
 
-                                                                
+
                 </fo:block-container>
 
-               
+
 
                </fo:flow>
 
 			</fo:page-sequence>
 
 	</fo:root>
-	
+
 </metal:block>
