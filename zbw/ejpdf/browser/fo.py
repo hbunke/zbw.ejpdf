@@ -14,7 +14,7 @@ from zope.component import getMultiAdapter
 from datetime import datetime
 from xml.sax.saxutils import escape
 from operator import itemgetter
-from toolz.itertoolz import first
+from toolz.itertoolz import first, count
 
 class View(BrowserView):
 
@@ -271,8 +271,8 @@ class View(BrowserView):
         paper_view = getMultiAdapter((self.context, self.request),
                                      name="paperView")
         si = paper_view.getSpecialIssues()
-        if si:
-            brain = first(si)
+        if count(si) > 0:
+            brain = first(paper_view.getSpecialIssues())
             return {'title': brain.Title, 'url': brain.getURL}
         return False
 

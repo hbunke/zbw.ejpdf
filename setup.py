@@ -25,7 +25,8 @@ setup(name='zbw.ejpdf',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
-          'BeautifulSoup'
+          'BeautifulSoup',
+          'toolz'
       ],
       entry_points="""
       # -*- Entry points: -*-
