@@ -13,7 +13,7 @@
 
     <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
 	font-family="Times New Roman"
-    font-size="10pt"
+    font-size="11pt"
     tal:define="ann view/annotations"
 	>
 
@@ -43,7 +43,7 @@
         <fo:page-sequence tal:attributes="master-reference context/portal_type">-->
         <fo:page-sequence master-reference="DiscussionPaper">
             <fo:static-content flow-name="xsl-region-after"
-                font-size="7pt" font-family="Helvetica" color="rgb(88,88,88)">
+                font-size="8pt" font-family="Helvetica" color="rgb(88,88,88)">
 
                 <fo:block tal:condition="python:context.portal_type == 'DiscussionPaper'">
                     <fo:inline keep-together.within-line="always" font-weight="bold"
@@ -215,12 +215,14 @@
                     <fo:block font-weight="bold"
                     space-before="18px">Abstract </fo:block>
 
-                <tal:abstract tal:define="abstract view/clean_abstract"
-                    tal:content="structure abstract" />
+                <fo:block line-height="15pt">
+                    <tal:abstract tal:define="abstract view/clean_abstract"
+                        tal:content="structure abstract" />
+                </fo:block>
 
                     <!-- special issue -->
                     <tal:si>
-                        <fo:block font-size="9px"
+                        <fo:block font-size="11pt"
                             tal:define="si view/special_issue"
                             tal:condition="si">
                             (Published in Special Issue
@@ -235,7 +237,7 @@
                     tal:condition="context/isPolicyPaper"
                     tal:define="type context/Type;
                                 url  string:$navroot/special-areas/policy-papers">
-                   <fo:block space-before="3px" font-size="9px">
+                   <fo:block space-before="3px" font-size="11pt">
                         <fo:inline tal:condition="python:type == 'DiscussionPaper'">
                            (Submitted as
                         </fo:inline>
@@ -250,7 +252,7 @@
                     tal:condition="context/isSurveyAndOverviewPaper"
                     tal:define="type context/Type;
                                 url  string:$navroot/special-areas/surveys-and-overviews">
-                   <fo:block space-before="3px" font-size="9px">
+                   <fo:block space-before="3px" font-size="11pt">
                         <fo:inline tal:condition="python:type == 'DiscussionPaper'">
                             (Submitted as
                         </fo:inline>
@@ -265,7 +267,7 @@
                     tal:condition="context/isReplication"
                     tal:define="type context/Type;
                                 url  string:$navroot/special-areas/replications">
-                   <fo:block space-before="3px" font-size="9px">
+                   <fo:block space-before="3px" font-size="11pt">
                         <fo:inline tal:condition="python:type == 'DiscussionPaper'">
                             (Submitted as
                         </fo:inline>
@@ -279,7 +281,7 @@
 
 
 
-                    <fo:block-container font-size="10px" space-before="6px">
+                    <fo:block-container font-size="11pt" space-before="6px">
 
                     <fo:block>
                         <fo:inline font-weight="bold" padding-right="9px">JEL </fo:inline>
@@ -320,12 +322,12 @@
 
                 </fo:block-container>
 
-                <fo:block-container space-before="6px" font-size="8pt"
+                <fo:block-container space-before="6px" font-size="9pt"
                 tal:define="ann view/annotations">
                     <fo:block font-style="italic"
                     tal:content="structure view/escape_additional" />
 
-                    <fo:block  space-before='6px'>
+                    <fo:block  space-before='6px' font-size="11pt">
                     <fo:inline font-weight="bold" padding-right="6px">Citation </fo:inline>
                         <tal:citation tal:replace="structure view/citation_string" />
                     </fo:block>
