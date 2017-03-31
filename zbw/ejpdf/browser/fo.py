@@ -16,11 +16,10 @@ from xml.sax.saxutils import escape
 from operator import itemgetter
 from toolz.itertoolz import first, count
 
+
 class View(BrowserView):
 
     template = ViewPageTemplateFile("fo.pt")
-
-
 
     def __call__(self):
         self.request.RESPONSE.setHeader('Content-Type', 'text/xml')
@@ -31,41 +30,32 @@ class View(BrowserView):
         necessary because unpublished paper do not have created(). In that case
         modified() is returned
         """
-
-        date = self.context.created()
-        if date is None:
-            date = self.context.modified()
-        return date
-
+        return self.context.created() or self.context.modified()
 
     def publish_date(self):
         """
         returns date in format Month dayNumber, Year
         """
-        #import pdb; pdb.set_trace()
         obj_date = DT2dt(self.__get_obj_date())
-        obj_date = obj_date.strftime("%B %d, %Y")
-        return obj_date
+        return obj_date.strftime("%B %d, %Y")
 
     def last_version_date(self):
         """
         """
         if self.context.portal_type == "JournalPaper":
             ja_view = getMultiAdapter((self.context, self.request),
-                                    name="ja_view")
+                                      name="ja_view")
             last_version = ja_view.last_version_info()
             if last_version and last_version['number'] > 1:
-                obj_date = last_version['date']
-                return obj_date
-        return None
+                return last_version['date']
+            return None
 
     def get_publish_year(self):
         """
         returns year of creation date
         """
         obj_date = DT2dt(self.__get_obj_date())
-        obj_date = obj_date.strftime("%Y")
-        return obj_date
+        return obj_date.strftime("%Y")
 
     def uri(self):
         """
@@ -74,22 +64,20 @@ class View(BrowserView):
         if pt == "DiscussionPaper":
             uri = self.context.absolute_url()
         if pt == "JournalPaper":
-            uri = "http://dx.doi.org/10.5018/economics-ejournal.ja.%s" %self.context.getId()
+            uri = "http://dx.doi.org/10.5018/economics-ejournal.ja.{}".format(self.context.getId())
         return uri
-
-
 
     def clean_abstract(self):
         """
         """
         html = self.context.getAbstract()
 
-        #tags we don't need BeautifulSoup for. KISS!
+        # tags we don't need BeautifulSoup for. KISS!
         abstract = html.replace('<br />', '')
 
         soup = BeautifulSoup(abstract, convertEntities=BeautifulSoup.HTML_ENTITIES)
 
-        #replacing html <p> with fo <fo:block>
+        # replacing html <p> with fo <fo:block>
         while True:
             p = soup.find('p')
             if not p:
@@ -104,7 +92,7 @@ class View(BrowserView):
             p['language'] = 'en'
             p['hyphenate'] = 'false'
 
-        #replacing sub
+        # replacing sub
         while True:
             sub = soup.find('sub')
             if not sub:
@@ -113,7 +101,7 @@ class View(BrowserView):
             sub['baseline-shift'] = 'sub'
             sub['font-size'] = '80%'
 
-        #replacing sup
+        # replacing sup
         while True:
             sup = soup.find('sup')
             if not sup:
@@ -135,7 +123,6 @@ class View(BrowserView):
                 break
             span.name = 'fo:inline'
 
-
         # removing <a> tags without tag content
         links = soup.findAll('a')
         for l in links:
@@ -143,29 +130,23 @@ class View(BrowserView):
 
         return unicode(soup)
 
-
     def annotations(self):
         """
         get zbw.coverdata annotations
         """
-
         ann = IAnnotations(self.context)
-        coverdata = ann['zbw.coverdata']
-        return coverdata
-
+        return ann['zbw.coverdata']
 
     def citation_string(self):
         """
         generates citation string
         """
+        # TODO: refactor!
+
         paper_view = getMultiAdapter((self.context, self.request),
-                name="paperView")
-
+                                     name="paperView")
         date = datetime.now()
-
         text = u""
-
-
         text += unicode(paper_view.authors_as_string(), 'utf-8')
         pt = self.context.portal_type
         if pt == "JournalPaper":
@@ -206,7 +187,6 @@ class View(BrowserView):
             text += " %s" %url
         return text
 
-
     def authors(self):
         """
         returns dicts with fullname and affiliation
@@ -214,45 +194,42 @@ class View(BrowserView):
         catalog = getToolByName(self.context, "portal_catalog")
 
         brains = map(lambda author_id: itemgetter(0)(catalog(id=author_id)),
-                self.context.getAuthors())
+                     self.context.getAuthors())
 
         authors = map(lambda brain: dict(
-            author_id = brain.getObject().getId(),
-            name = '{} {}'.format(brain.getObject().getFirstname(), brain.getSurname),
-            affil = brain.getObject().getOrganisation()
-            ), brains)
+            author_id=brain.getObject().getId(),
+            name='{} {}'.format(brain.getObject().getFirstname(), brain.getSurname),
+            affil=brain.getObject().getOrganisation()
+        ), brains)
 
         return authors
-
 
     def authors_as_string(self):
         """
         """
-
         return map(lambda author: self._authors_concat_string(author,
-                    self.authors()), self.authors())
-
-
+                   self.authors()), self.authors())
 
     def _authors_concat_string(self, author, authors):
         """
         """
         nr = len(authors)
+        name = author['name']
         if nr <= 1:
-            return author['name']
+            return name
 
         if nr == 2:
             if authors[-1] == author:
-                return author['name']
-            #this is actually quite ugly. It relies on XSL-FO to produce the
-            #necessary whitespace after 'and'. We had double-whitespace when
-            #returning "and "
-            return "%s and" %author['name']
+                return name
+            # this is actually quite ugly. It relies on XSL-FO to produce the
+            # necessary whitespace after 'and'. We had double-whitespace when
+            # returning "and "
+            return "{} and".format(name)
 
         if nr > 2:
             if authors[-1] == author:
-                return "and %s" %author['name']
-            return "%s,"%author['name']
+                return "and {}".format(name)
+            return "{},".format(name)
         return None
 
     def get_volume(self):
@@ -261,7 +238,7 @@ class View(BrowserView):
         """
         cyear = int(self.__get_obj_date().strftime('%Y'))
         startyear = 2007
-        vol = cyear - startyear +1
+        vol = cyear - startyear + 1
         return vol
 
     def special_issue(self):
@@ -276,14 +253,11 @@ class View(BrowserView):
             return {'title': brain.Title, 'url': brain.getURL}
         return False
 
-
     def escape_title(self):
         """
         """
         title = self.context.Title()
-        title = escape(title)
-        return title
-
+        return escape(title)
 
     def escape_additional(self):
         ann = self.annotations()
