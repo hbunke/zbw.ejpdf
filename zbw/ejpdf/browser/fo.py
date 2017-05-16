@@ -170,7 +170,7 @@ class View(BrowserView):
 
             if self.context.getPages():
                 pages = self.context.getPages()
-                text += u": 1—%s" %pages
+                text += u": 1&#x2013;%s" % pages
 
             if version and version['number'] > 1:
                text += " (Version %s)" %version['number']

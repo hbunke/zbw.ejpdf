@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+
+v1.0.3
+------
+[2017-05-16]
+
+-   ndash for page range in citation
+
+
 v1.0.2
 ------
 [2017-03-31]
