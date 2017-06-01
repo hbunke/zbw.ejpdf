@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-# Dr. Hendrik Bunke <h.bunke@zbw.eu>
+# Hendrik Bunke <h.bunke@zbw.eu>
 # German National Library of Economics (ZBW)
 # http://zbw.eu/
 
@@ -14,7 +14,7 @@ from zope.component import getMultiAdapter
 from datetime import datetime
 from xml.sax.saxutils import escape
 from operator import itemgetter
-from toolz.itertoolz import first, count
+from toolz.itertoolz import first, last, count
 
 
 class View(BrowserView):
@@ -36,36 +36,35 @@ class View(BrowserView):
         """
         returns date in format Month dayNumber, Year
         """
-        obj_date = DT2dt(self.__get_obj_date())
-        return obj_date.strftime("%B %d, %Y")
+        return DT2dt(self.__get_obj_date()).strftime("%B %d, %Y")
 
     def last_version_date(self):
         """
         """
-        if self.context.portal_type == "JournalPaper":
+#        if self.context.portal_type == "JournalPaper":
+        def ja():
             ja_view = getMultiAdapter((self.context, self.request),
                                       name="ja_view")
             last_version = ja_view.last_version_info()
-            if last_version and last_version['number'] > 1:
-                return last_version['date']
-            return None
+            return last_version and last_version['number'] > 1 and last_version['date'] or None
+        
+        return self.context.portal_type and ja() or None
+
 
     def get_publish_year(self):
         """
         returns year of creation date
         """
-        obj_date = DT2dt(self.__get_obj_date())
-        return obj_date.strftime("%Y")
+        return DT2dt(self.__get_obj_date()).strftime("%Y")
 
     def uri(self):
         """
         """
-        pt = self.context.portal_type
-        if pt == "DiscussionPaper":
-            uri = self.context.absolute_url()
-        if pt == "JournalPaper":
-            uri = "http://dx.doi.org/10.5018/economics-ejournal.ja.{}".format(self.context.getId())
-        return uri
+        doi_base = "http://dx.doi.org/10.5018/economics-ejournal.ja"
+        obj = self.context
+        pt = obj.portal_type
+        return pt == 'Discussionpaper' and obj.absolute_url()\
+            or pt == 'JournalPaper' and '{}.{}'.format(doi_base, obj.getId())
 
     def clean_abstract(self):
         """
@@ -74,7 +73,6 @@ class View(BrowserView):
 
         # tags we don't need BeautifulSoup for. KISS!
         abstract = html.replace('<br />', '')
-
         soup = BeautifulSoup(abstract, convertEntities=BeautifulSoup.HTML_ENTITIES)
 
         # replacing html <p> with fo <fo:block>
@@ -137,55 +135,55 @@ class View(BrowserView):
         ann = IAnnotations(self.context)
         return ann['zbw.coverdata']
 
-    def citation_string(self):
-        """
-        generates citation string
-        """
-        # TODO: refactor!
+    def citation_string_ja(self):
+        """ Citation string for Journal Articles """
 
         paper_view = getMultiAdapter((self.context, self.request),
                                      name="paperView")
+        authors = unicode(paper_view.authors_as_string(), 'utf-8')
+        type_view = getMultiAdapter((self.context, self.request), name="ja_view")
+        version = type_view.last_version_info()
+        title = unicode(self.escape_title(), 'utf-8')
+        
+        # kill all if! ;-)
+        version_string = version and version['number'] > 1 and "(Version {})".format(version['number']) or ""
+        title_end = title.endswith(('?', '!', '.')) and ' ' or "."
+        pages = self.context.getPages() and u": 1&#x2013;{}".format(self.context.getPages()) or ""
+
+        d = dict(
+            authors=authors,
+            version_string=version_string,
+            doi_url="http://dx.doi.org/{}".format(type_view.get_doi()),
+            pubdate=version.get('year',
+                self.context.created().strftime("%Y")),
+            title=title,
+            pages=pages,
+            title_end=title_end,
+            volume=type_view.get_volume(),
+            number=self.context.getId(),
+            ej_string="<fo:inline font-style='italic'>Economics: The Open-Access, Open-Assessment E-Journal</fo:inline>"
+        )
+
+        return u"{authors} ({pubdate}). {title}{title_end} {ej_string}, {volume} \
+                ({number}){pages} {version_string}. {doi_url}".format(**d)
+        
+    def citation_string_dp(self):
+        """ Citation string for Discussion Papers """
+
+        paper_view = getMultiAdapter((self.context, self.request),
+                                     name="paperView")
+        authors = unicode(paper_view.authors_as_string(), 'utf-8')
         date = datetime.now()
-        text = u""
-        text += unicode(paper_view.authors_as_string(), 'utf-8')
-        pt = self.context.portal_type
-        if pt == "JournalPaper":
-            type_view = getMultiAdapter((self.context, self.request), name="ja_view")
-            version = type_view.last_version_info()
-            doi_url = "http://dx.doi.org/%s" %type_view.get_doi()
+        type_view = getMultiAdapter((self.context, self.request), name="dp_view")
+        
+        d = dict(
+            authors=authors,
+            citation=escape(type_view.cite_as()),
+            url=self.context.absolute_url()
+        )
 
-            if version:
-                text += " ({}). ".format(version['year'])
-            else:
-                text += " ({}). ".format(self.context.created().strftime("%Y"))
-
-            title = self.escape_title()
-            text += unicode(title, 'utf-8')
-
-            signs = ('?', '!', '.')
-            if not text.endswith(signs):
-                text += "."
-            text += " <fo:inline font-style='italic'>Economics: The Open-Access, Open-Assessment E-Journal</fo:inline>, "
-            text += "%s (%s)" %(type_view.get_volume(), self.context.getId())
-
-            if self.context.getPages():
-                pages = self.context.getPages()
-                text += u": 1&#x2013;%s" % pages
-
-            if version and version['number'] > 1:
-               text += " (Version %s)" %version['number']
-            text += ". %s" %doi_url
-
-        if pt == "DiscussionPaper":
-            type_view = getMultiAdapter((self.context, self.request), name="dp_view")
-            url = self.context.absolute_url()
-
-            citation = escape(type_view.cite_as())
-
-            text += unicode(citation, 'utf-8')
-            text = text.replace(u"Not published yet", unicode(date.year))
-            text += " %s" %url
-        return text
+        string = u"{authors} {citation} {url}".format(**d)
+        return string.replace(u"Not published yet", unicode(date.year))
 
     def authors(self):
         """
@@ -196,70 +194,59 @@ class View(BrowserView):
         brains = map(lambda author_id: itemgetter(0)(catalog(id=author_id)),
                      self.context.getAuthors())
 
-        authors = map(lambda brain: dict(
-            author_id=brain.getObject().getId(),
-            name='{} {}'.format(brain.getObject().getFirstname(), brain.getSurname),
-            affil=brain.getObject().getOrganisation()
-        ), brains)
+        authors = map(lambda obj: dict(
+            author_id=obj.getId(),
+            name='{} {}'.format(obj.getFirstname(), obj.getSurname()),
+            affil=obj.getOrganisation()),
+            [brain.getObject() for brain in brains])
 
         return authors
 
     def authors_as_string(self):
         """
         """
-        return map(lambda author: self._authors_concat_string(author,
+        return map(lambda author: authors_concat_string(author,
                    self.authors()), self.authors())
-
-    def _authors_concat_string(self, author, authors):
-        """
-        """
-        nr = len(authors)
-        name = author['name']
-        if nr <= 1:
-            return name
-
-        if nr == 2:
-            if authors[-1] == author:
-                return name
-            # this is actually quite ugly. It relies on XSL-FO to produce the
-            # necessary whitespace after 'and'. We had double-whitespace when
-            # returning "and "
-            return "{} and".format(name)
-
-        if nr > 2:
-            if authors[-1] == author:
-                return "and {}".format(name)
-            return "{},".format(name)
-        return None
-
+    
     def get_volume(self):
         """
         returns Volume number of Journalarticle according to creation date
         """
         cyear = int(self.__get_obj_date().strftime('%Y'))
         startyear = 2007
-        vol = cyear - startyear + 1
-        return vol
+        return cyear - startyear + 1
 
     def special_issue(self):
         """
         checks if paper has been published in Special Issue
         """
-        paper_view = getMultiAdapter((self.context, self.request),
-                                     name="paperView")
-        si = paper_view.getSpecialIssues()
-        if count(si) > 0:
+        def si_dict():
             brain = first(paper_view.getSpecialIssues())
             return {'title': brain.Title, 'url': brain.getURL}
-        return False
-
+        
+        paper_view = getMultiAdapter((self.context, self.request),
+                                     name="paperView")
+        return count(paper_view.getSpecialIssues()) > 0 and si_dict() or False
+        
     def escape_title(self):
-        """
-        """
-        title = self.context.Title()
-        return escape(title)
+        return escape(self.context.Title())
 
     def escape_additional(self):
         ann = self.annotations()
         additional = escape(ann['additional'])
         return unicode(additional, 'utf-8')
+
+
+def authors_concat_string(author, authors):
+    """
+    return proper authors string, dependent on number of authors (1, 2, or
+    many)
+    """
+    nr = len(authors)
+    name = author['name']
+    is_last = lambda d: (last(authors) == author and "and {}".format(name)) or d
+    return (nr == 1 and name)\
+        or (nr == 2 and is_last(name)) \
+        or is_last("{},".format(name))
+
+

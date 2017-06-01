@@ -328,8 +328,9 @@
                     tal:content="structure view/escape_additional" />
 
                     <fo:block  space-before='6px' font-size="11pt">
-                    <fo:inline font-weight="bold" padding-right="6px">Citation </fo:inline>
-                        <tal:citation tal:replace="structure view/citation_string" />
+                        <fo:inline font-weight="bold" padding-right="6px">Citation </fo:inline>
+                        <tal:citation tal:condition="python:context.portal_type=='JournalPaper'" tal:replace="structure view/citation_string_ja" />
+                        <tal:citation tal:condition="python:context.portal_type=='DiscussionPaper'" tal:replace="structure view/citation_string_dp" />
                     </fo:block>
 
 
