@@ -39,16 +39,13 @@ class View(BrowserView):
         return DT2dt(self.__get_obj_date()).strftime("%B %d, %Y")
 
     def last_version_date(self):
-        """
-        """
-#        if self.context.portal_type == "JournalPaper":
         def ja():
             ja_view = getMultiAdapter((self.context, self.request),
                                       name="ja_view")
             last_version = ja_view.last_version_info()
             return last_version and last_version['number'] > 1 and last_version['date'] or None
         
-        return self.context.portal_type and ja() or None
+        return self.context.portal_type == "JournalPaper" and ja() or None
 
 
     def get_publish_year(self):
@@ -190,7 +187,6 @@ class View(BrowserView):
         returns dicts with fullname and affiliation
         """
         catalog = getToolByName(self.context, "portal_catalog")
-
         brains = map(lambda author_id: itemgetter(0)(catalog(id=author_id)),
                      self.context.getAuthors())
 
@@ -203,8 +199,6 @@ class View(BrowserView):
         return authors
 
     def authors_as_string(self):
-        """
-        """
         return map(lambda author: authors_concat_string(author,
                    self.authors()), self.authors())
     

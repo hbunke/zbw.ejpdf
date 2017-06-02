@@ -92,7 +92,7 @@ class View(BrowserView):
                         'email' : email, 'corresponding' : False}
                 authors.append(author)
         
-        #set to the corresponding author
+        # set to the corresponding author
         corr = self.__corresponding_author()
         if corr is not False:
             for author in authors:
