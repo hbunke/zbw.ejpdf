@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v1.0.4
+------
+
+-   implement G20 Policy Papers
+-   code improvements (more functional)
+
 
 v1.0.3
 ------
