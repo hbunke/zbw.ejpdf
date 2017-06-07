@@ -27,8 +27,7 @@ class View(BrowserView):
 
     def __get_obj_date(self):
         """
-        necessary because unpublished paper do not have created(). In that case
-        modified() is returned
+        unpublished papers do not have created()
         """
         return self.context.created() or self.context.modified()
 
@@ -47,7 +46,6 @@ class View(BrowserView):
         
         return self.context.portal_type == "JournalPaper" and ja() or None
 
-
     def get_publish_year(self):
         """
         returns year of creation date
@@ -60,7 +58,7 @@ class View(BrowserView):
         doi_base = "http://dx.doi.org/10.5018/economics-ejournal.ja"
         obj = self.context
         pt = obj.portal_type
-        return pt == 'Discussionpaper' and obj.absolute_url()\
+        return pt == 'DiscussionPaper' and obj.absolute_url()\
             or pt == 'JournalPaper' and '{}.{}'.format(doi_base, obj.getId())
 
     def clean_abstract(self):
@@ -175,7 +173,7 @@ class View(BrowserView):
         
         d = dict(
             authors=authors,
-            citation=escape(type_view.cite_as()),
+            citation=unicode(escape(type_view.cite_as()), 'utf-8'),
             url=self.context.absolute_url()
         )
 

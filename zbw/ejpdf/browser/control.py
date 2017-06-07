@@ -8,8 +8,8 @@ from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
 from zope.annotation.interfaces import IAnnotations
-from toolz.itertoolz import first
-from toolz.dicttoolz import valfilter
+from toolz.itertoolz import first, get
+from operator import truth
 
 
 class View(BrowserView):
@@ -26,43 +26,30 @@ class View(BrowserView):
         """
         get zbw.coverdata annotations
         """
-
         ann = IAnnotations(self.context)
-        key = 'zbw.coverdata'
-        if key in ann:
-            data = ann[key]
-            d = {}
-            
-            # make sure that all necessary keys are in annotations; some
-            # annotations are from an earlier dev stage
-            keys = ['keywords',
-                    'additional',
-                    'authors',
-                    "date_submission",
-                    "date_accepted_as_dp",
-                    "date_published_as_dp",
-                    "date_revised",
-                    "date_accepted_as_ja",
-                    "date_published_as_ja",
-                    ]
-
-            for k in keys:
-                if k in data:
-                    d[k] = data[k]
-                else:
-                    d[k] = False
-            return d
+        data = ann.get('zbw.coverdata', {})
         
-        # all other missing annotations are catched by the template
-        return dict(authors=False)
+        # make sure that all necessary keys are in annotations; some
+        # annotations are from an earlier dev stage
+        keys = ['keywords',
+                'additional',
+                'authors',
+                "date_submission",
+                "date_accepted_as_dp",
+                "date_published_as_dp",
+                "date_revised",
+                "date_accepted_as_ja",
+                "date_published_as_ja",
+                ]
+        
+        dic = {k: data.get(k) for k in keys if k in data}
+        return dic or dict(authors=[])
 
     def authors(self):
         """
-        returns dicts with fullname, affiliation, email, and marks
+        return list of dicts with fullname, affiliation, email; mark
         corresponding author
         """
-        ann = IAnnotations(self.context)
-        key = 'zbw.coverdata'
         anna = self.annotations()['authors']
        
         def author_dict(i):
@@ -70,49 +57,25 @@ class View(BrowserView):
             obj = first(catalog(id=i)).getObject()
             name = "{} {}".format(obj.getFirstname(), obj.getSurname())
                
-            # XXX workaround for a strange bug
-            # try:
-                # dic = ann[key]['authors']
-                # for d in dic:
-                    # if i == d['author_id']:
-                        # affil = d['affil']
-            # except:
-                # pass
-            
             def aff(d):
-                affil = obj.getOrganisation()
-                fd = valfilter(dic, lambda v: i == v) 
+                return i == d.get('author_id', None) and d.get('affil', None)
+
+            def corresponding_author():
+                ca = lambda a: a['corresponding'] is True
+                return first(filter(ca, anna))['author_id'] == i
                 
+            corresponding = anna and corresponding_author()
+            affil = get(0, filter(truth, map(aff, anna)), None) or obj.getOrganisation()
 
-                if i == d.get('author_id', None):
-                    affil = d.get('affil', None)
-                return affil
-
-            
-            dic = ann[key]['authors'] or {}
-            affil = first(map(aff, dic))
-
-            author_id = obj.getId()
-            email = obj.getEmail()
-            corresponding = anna and corresponding_author(i) or False
-
-            return {'author_id': author_id, 'name': name, 'affil': affil,
-                    'email': email, 'corresponding': corresponding}
+            return {'author_id': obj.getId(), 'name': name, 'affil': affil,
+                    'email': obj.getEmail(), 'corresponding': corresponding}
         
-        
-        def corresponding_author(i):
-            ca = lambda a: a['corresponding'] is True
-            return first(filter(ca, anna))['author_id'] == i
-            
         authors = map(author_dict, self.context.getAuthors())
         
         if not any(a['corresponding'] for a in authors):
-            first(authors)['corresponding'] = True
-
+            first(authors).update({'corresponding': True})
+        
         return authors
-
-
-    
 
 
     

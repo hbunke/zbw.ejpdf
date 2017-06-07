@@ -74,6 +74,8 @@ class CoverAnnotation(object):
 
         if KEY not in ann:
             ann[KEY] = PersistentDict()
+        
+        # self.ann = ann.get(KEY, False) or PersistentDict()
         self.ann = ann[KEY]
 
         request_author_keys = ['author_name', 'affil', 'author_email',
