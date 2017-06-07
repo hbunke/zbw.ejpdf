@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-# Dr. Hendrik Bunke <h.bunke@zbw.eu>
+# Hendrik Bunke <h.bunke@zbw.eu>
 # German National Library of Economics (ZBW)
 # http://zbw.eu/
 
@@ -8,6 +8,8 @@ from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
 from zope.annotation.interfaces import IAnnotations
+from toolz.itertoolz import first, get
+from operator import truth
 
 
 class View(BrowserView):
@@ -20,103 +22,60 @@ class View(BrowserView):
     def __call__(self):
         return self.template()
     
-
     def annotations(self):
         """
         get zbw.coverdata annotations
         """
-
         ann = IAnnotations(self.context)
-        key = 'zbw.coverdata'
-        if key in ann:
-            data = ann[key]
-            d = {}
-            
-            #make sure that all necessary keys are in annotations; some
-            #annotations are from an earlier dev stage
-            keys = ['keywords', 
-                    'additional', 
-                    'authors', 
-                    "date_submission",
-                    "date_accepted_as_dp",
-                    "date_published_as_dp",
-                    "date_revised", 
-                    "date_accepted_as_ja",
-                    "date_published_as_ja",
-                    ]
-
-            for k in keys:
-                if k in data:
-                    d[k] = data[k]
-                else:
-                    d[k] = False
-            return d
+        data = ann.get('zbw.coverdata', {})
         
-        #all other missing annotations are catched by the template
-        return dict(
-                authors = False)
-
+        # make sure that all necessary keys are in annotations; some
+        # annotations are from an earlier dev stage
+        keys = ['keywords',
+                'additional',
+                'authors',
+                "date_submission",
+                "date_accepted_as_dp",
+                "date_published_as_dp",
+                "date_revised",
+                "date_accepted_as_ja",
+                "date_published_as_ja",
+                ]
+        
+        dic = {k: data.get(k) for k in keys if k in data}
+        return dic or dict(authors=[])
 
     def authors(self):
         """
-        returns dicts with fullname, affiliation, email and marks
+        return list of dicts with fullname, affiliation, email; mark
         corresponding author
         """
-        ann = IAnnotations(self.context)
-        key = 'zbw.coverdata'
-        
-        author_id_list = self.context.getAuthors()
-        authors = []
-        catalog = getToolByName(self.context, "portal_catalog")
-        for i in author_id_list:
-            brains = catalog(id=i)
-            for brain in brains:
-                obj = brain.getObject()
-                surname = brain.getSurname
-                firstname = obj.getFirstname()
-                name = "%s %s" %(firstname, surname)
+        anna = self.annotations()['authors']
+       
+        def author_dict(i):
+            catalog = getToolByName(self.context, "portal_catalog")
+            obj = first(catalog(id=i)).getObject()
+            name = "{} {}".format(obj.getFirstname(), obj.getSurname())
                
-                ##XXX workaround for a strange bug
-                affil = obj.getOrganisation()
-                try:
-                    dic = ann[key]['authors']
-                    for d in dic:
-                        if i == d['author_id']:
-                            affil = d['affil']
-                except:
-                    pass
+            def aff(d):
+                return i == d.get('author_id', None) and d.get('affil', None)
+
+            def corresponding_author():
+                ca = lambda a: a['corresponding'] is True
+                return first(filter(ca, anna))['author_id'] == i
                 
-                author_id = obj.getId()
-                email = obj.getEmail()
-                author = {'author_id' : author_id, 'name' : name, 'affil' : affil,
-                        'email' : email, 'corresponding' : False}
-                authors.append(author)
+            corresponding = anna and corresponding_author()
+            affil = get(0, filter(truth, map(aff, anna)), None) or obj.getOrganisation()
+
+            return {'author_id': obj.getId(), 'name': name, 'affil': affil,
+                    'email': obj.getEmail(), 'corresponding': corresponding}
         
-        #set to the corresponding author
-        corr = self.__corresponding_author()
-        if corr is not False:
-            for author in authors:
-                if author['name'] == corr:
-                    author['corresponding'] = True
-        else:
-            authors[0]['corresponding'] = True
-
+        authors = map(author_dict, self.context.getAuthors())
+        
+        if not any(a['corresponding'] for a in authors):
+            first(authors).update({'corresponding': True})
+        
         return authors
-
-
-    def __corresponding_author(self):
-        """
-        helper method. checks for corresponding author in annotation and
-        returns either name or False
-        """
-        ann = self.annotations()
-        if ann['authors'] is False:
-            return False
-        for author in ann['authors']:
-            if author['corresponding'] is True:
-                return author['name']
-            
-    
 
 
     
