@@ -144,13 +144,13 @@ class View(BrowserView):
         version_string = version and version['number'] > 1 and "(Version {})".format(version['number']) or ""
         title_end = title.endswith(('?', '!', '.')) and ' ' or "."
         pages = self.context.getPages() and u": 1&#x2013;{}".format(self.context.getPages()) or ""
+        pubdate = version and version.get('year') or self.context.created().strftime("%Y")
 
         d = dict(
             authors=authors,
             version_string=version_string,
             doi_url="http://dx.doi.org/{}".format(type_view.get_doi()),
-            pubdate=version.get('year',
-                self.context.created().strftime("%Y")),
+            pubdate=pubdate,
             title=title,
             pages=pages,
             title_end=title_end,

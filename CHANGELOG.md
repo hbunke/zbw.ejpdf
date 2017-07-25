@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+
+v1.0.5
+------
+
+[2017-07-25]
+
+-   Bugfix: error with pubdate if article PDF not yet available
+
+
 v1.0.4
 ------
 
